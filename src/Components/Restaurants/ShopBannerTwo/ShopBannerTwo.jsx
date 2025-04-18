@@ -2,11 +2,11 @@ import React from 'react';
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 const ShopBannerTwo = ({
-  sentence = "RESTAURANTS AVAILABLE HERE  " ,
+  sentence = "SHOP AVAILABLE HERE  " ,
   manualMode = false,
   blurAmount = 3,
   borderColor = "green",
-  glowColor = "rgba(0, 255, 0, 0.6)",
+  glowColor = "#339179",
   animationDuration = 0.3,
   pauseBetweenAnimations = 1,
 }) => {

@@ -24,7 +24,7 @@ import { IoMdLogIn } from "react-icons/io";
 import useAdmin from "../Hooks/useAdmin";
 import useModerator from "../Hooks/useModerator";
 import useRestaurantOwner from "../Hooks/useRestaurantOwner";
-import { GiHamburger } from "react-icons/gi";
+import { HiOutlineMenu } from "react-icons/hi";
 import useAuth from "../Hooks/useAuth";
 
 import useAddFood from "../Hooks/useAddFood";
@@ -43,7 +43,46 @@ const Navbar = () => {
     const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [placeholder, setPlaceholder] = useState("Search in Shop");
   const wrapperRef = useRef(null);
+
+  // Typewriter placeholder texts
+  const phrases = [
+    "Search in Shop",
+    "Find your favorite food",
+    "Try 'Burger'",
+    "Looking for Pizza?",
+    "What's for dinner?",
+  ];
+
+  useEffect(() => {
+    let currentPhrase = 0;
+    let currentLetter = 0;
+    let typingForward = true;
+
+    const type = () => {
+      if (typingForward) {
+        setPlaceholder(phrases[currentPhrase].slice(0, currentLetter + 1));
+        currentLetter++;
+        if (currentLetter === phrases[currentPhrase].length) {
+          typingForward = false;
+          setTimeout(type, 1500); // hold full text
+          return;
+        }
+      } else {
+        setPlaceholder(phrases[currentPhrase].slice(0, currentLetter - 1));
+        currentLetter--;
+        if (currentLetter === 0) {
+          typingForward = true;
+          currentPhrase = (currentPhrase + 1) % phrases.length;
+        }
+      }
+      setTimeout(type, typingForward ? 80 : 40);
+    };
+
+    const timeoutId = setTimeout(type, 1000);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   useEffect(() => {
     if (searchText.trim() === "") {
@@ -65,18 +104,16 @@ const Navbar = () => {
       });
     });
 
-    setSuggestions(filtered.slice(0, 10)); // Limit to 10 suggestions
+    setSuggestions(filtered.slice(0, 10));
     setIsOpen(true);
   }, [searchText, restaurantData]);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -178,21 +215,59 @@ const Navbar = () => {
     <div>
 
       {/* First Navbar */}
-      <div className="navbar bg-fixed  px-2 md:px-6 lg:px-7">
+      <div className={`navbar  px-3 md:px-6 lg:px-8 bg-[#339179] ${scrolled ? "fixed top-0 left-0 w-full  shadow z-10 " : ""}`}>
+      
         <div className="navbar-start">
-          <a className=" w-10  lg:w-14  rounded-full "><img src="https://i.ibb.co.com/F57mtch/logo2.png" alt="" /></a>
+      
+      <a href="/" className="  w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
+   
         </div>
-         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 gap-4">
-            {navbarLinks}
+      <div className="navbar-center">
+      <div ref={wrapperRef} className="relative p-1 lg:p-3 w-full lg:w-[600px]">
+      <div className="relative">
+        <input
+          type="text"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onFocus={() => setIsOpen(true)}
+          placeholder={placeholder}
+          className="input input-bordered w-full pr-10 rounded-full focus:outline-none focus:ring-2 focus:ring-[#339179] transition duration-300"
+        />
+        <button className="absolute right-3 top-1/2 -translate-y-1/2 text-[#339179] animate-pulse">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+        </button>
+      </div>
+
+      {isOpen && suggestions.length > 0 && (
+        <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 mt-1 rounded-md shadow z-50 max-h-60 overflow-y-auto">
+          <ul>
+            {suggestions.map((item, index) => (
+              <li
+                key={index}
+                className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  setSearchText(item.label);
+                  setIsOpen(false);
+                }}
+              >
+                {item.label}
+              </li>
+            ))}
           </ul>
         </div>
+      )}
+    </div>
+      </div>
         <div className="navbar-end gap-2 ">
       
      
           <div>
           <Menu>
-        <MenuHandler>
+        {/* <MenuHandler>
           <div
             className="flex items-center text-sm bg-[#339179] text-[#ffff] p-1 px-2 rounded-full gap-2 cursor-pointer"
             onClick={() => setOpenMenu(!openMenu)}
@@ -201,7 +276,7 @@ const Navbar = () => {
             {countries.find(({ name }) => name === language)?.name}
             <ChevronDownIcon className={`h-3.5 w-3.5 transition-transform ${openMenu ? "rotate-180" : ""}`} />
           </div>
-        </MenuHandler>
+        </MenuHandler> */}
 
         <MenuList className="w-28">
           {countries.map(({ name, flag }) => (
@@ -438,14 +513,15 @@ const Navbar = () => {
         </div>
       </div>
       {/* Second Navbar */}
-      <div className={`navbar  px-3 md:px-6 lg:px-8 bg-[#339179] ${scrolled ? "fixed top-0 left-0 w-full  shadow z-10 " : ""}`}>
+      <div className={`navbar  px-3 md:px-6 lg:px-8 bg-[#fff]  " : ""}`}>
         <div className="navbar-start">
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle text-white  font-bold">
+      
+        <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle text-[#339179]ite  font-bold">
 
               <Menu>
                 <MenuHandler>
-                  <a className="text-white text-2xl"> <GiHamburger /></a>
+                  <a className="text-[#339179] ite text-2xl"><HiOutlineMenu /></a>
                 </MenuHandler>
 
 
@@ -456,8 +532,8 @@ const Navbar = () => {
                       to="/"
                       className={({ isActive }) =>
                         isActive
-                          ? "font-bold text-[#1ad471] border-b-2 border-red-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
-                          : "font-bold text-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
+                          ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
+                          : "font-bold text-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
                       }
                     >
                       HOME
@@ -468,8 +544,8 @@ const Navbar = () => {
                       to="/shop"
                       className={({ isActive }) =>
                         isActive
-                          ? "font-bold text-[#1ad471] border-b-2 border-red-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
-                          : "font-bold text-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
+                          ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
+                          : "font-bold text-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
                       }
                     >
                       SHOP
@@ -480,8 +556,8 @@ const Navbar = () => {
                     to="/categories"
                     className={({ isActive }) =>
                       isActive
-                        ? "font-bold text-[#1ad471] border-b-2 border-red-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
-                        : "font-bold text-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
+                        ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
+                        : "font-bold text-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
                     }
                   >
                     CATEGORIES
@@ -492,8 +568,8 @@ const Navbar = () => {
                     to="/deals"
                     className={({ isActive }) =>
                       isActive
-                        ? "font-bold text-[#1ad471] border-b-2 border-red-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
-                        : "font-bold text-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
+                        ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
+                        : "font-bold text-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
                     }
                   >
                     DEALS
@@ -504,8 +580,8 @@ const Navbar = () => {
                     to="/about"
                     className={({ isActive }) =>
                       isActive
-                        ? "font-bold text-[#1ad471] border-b-2 border-red-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
-                        : "font-bold text-[#1ad471] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#1ad471] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
+                        ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
+                        : "font-bold text-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-0 before:transition-transform before:duration-300 hover:before:scale-100 rounded"
                     }
                   >
                     ABOUT
@@ -519,48 +595,13 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <div ref={wrapperRef} className="relative w-full max-w-lg">
-      <div className="relative">
-        <input
-          type="text"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onFocus={() => setIsOpen(true)}
-          placeholder="Search in Shop"
-          className="input input-bordered w-full pl-4 pr-10 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f85606] transition duration-300"
-        />
-        <button className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f85606]">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-          </svg>
-        </button>
-      </div>
-
-      {isOpen && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 mt-1 rounded-md shadow z-50 max-h-60 overflow-y-auto">
-          <ul>
-            {suggestions.map((item, index) => (
-              <li
-                key={index}
-                className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                onClick={() => {
-                  setSearchText(item.label);
-                  setIsOpen(false);
-                }}
-              >
-                {item.label}
-              </li>
-            ))}
+          
+        <div>
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1 gap-4">
+            {navbarLinks}
           </ul>
         </div>
-      )}
-    </div>
-        <div>
-          <div>
-
-          </div>
         </div>
         <div className="navbar-end">
         <div>
@@ -587,7 +628,7 @@ const Navbar = () => {
 
                   <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
                     <div className="indicator">
-                      <div className="text-2xl text-white">  <GiHamburger /></div>
+                      <div className="text-2xl text-[#339179] "><RiShoppingBag2Line /></div>
                       <span className="badge text-[10px] indicator-item text-[#339179]">{cartFood.length}</span>
                     </div>
                   </div>

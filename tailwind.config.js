@@ -24,6 +24,11 @@ module.exports = withMT({
           animation: {
             shimmer: 'shimmer 1.5s infinite linear',
           },
+         
+            animation: {
+              'spin-slow': 'spin 3s linear infinite',
+            
+          }
         },
           fontFamily: {
             Kanit : ["Kanit" , "sans-serif"],

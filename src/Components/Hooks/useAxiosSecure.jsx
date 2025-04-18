@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 
 export const axiosSecure  = axios.create({
-    baseURL: "http://localhost:5000"
+    baseURL: "https://foodhub-backend.vercel.app/"
 })
 const useAxiosSecure = () => {
     const {logOut} = useAuth();
@@ -17,7 +17,7 @@ const useAxiosSecure = () => {
         config.headers.authorization = `Bearar ${token}`
         return config
     } , function (error) {
-        // Do something with request errorhttp://localhost:5000/
+        // Do something with request errorhttps://foodhub-backend.vercel.app//
         return Promise.reject(error);
       })
       //  reaponse interceptors
