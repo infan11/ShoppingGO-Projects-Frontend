@@ -127,7 +127,9 @@ const DetailsShop = () => {
         foodPrice: food.price,
         foodImage: food.foodImage,
         email: user.email,
-        category : food.category
+        category : food.category,
+        quantity : parseFloat(1)
+      
       };
 
       axiosSecure.post("/addFood", foodInfo)

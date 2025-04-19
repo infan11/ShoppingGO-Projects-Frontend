@@ -215,15 +215,15 @@ const Navbar = () => {
     <div>
 
       {/* First Navbar */}
-      <div className={`navbar  px-3 md:px-6 lg:px-8 bg-[#339179] ${scrolled ? "fixed top-0 left-0 w-full  shadow z-10 " : ""}`}>
+      <div className={`navbar  px-2 md:px-6 lg:px-8 bg-[#339179] ${scrolled ? "fixed top-0 left-0 w-full  shadow z-10 " : ""}`}>
       
         <div className="navbar-start">
       
-      <a href="/" className="  w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
+      <a href="/" className=" w-[100px]  lg:w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
    
         </div>
       <div className="navbar-center">
-      <div ref={wrapperRef} className="relative p-1 lg:p-3 w-full lg:w-[600px]">
+      <div ref={wrapperRef} className="relative p-1 lg:p-3 w-[200px] lg:w-[600px]">
       <div className="relative">
         <input
           type="text"
