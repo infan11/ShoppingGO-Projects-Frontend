@@ -16,7 +16,7 @@
   setValue,
     } = useForm({
       defaultValues: {
-        restaurantName: user?.displayName || "Default Restaurant",
+        restaurantName: user?.displayName || " Restaurant Name",
       },
     });
   const navigate = useNavigate();

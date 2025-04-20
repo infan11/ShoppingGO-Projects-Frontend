@@ -85,7 +85,7 @@ const UploadInfo = () => {
                 }
             );
 
-            navigate("/restaurants"); // Redirect after successful submission
+            navigate("/shop"); 
         } catch (error) {
             toast.error(typeof error === "string" ? error : "Something went wrong.");
         } finally {

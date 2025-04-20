@@ -1,3 +1,4 @@
+// Users.jsx
 import useAllUserHooks from "../../Hooks/useAllUserHooks";
 import { MdOutlineAdminPanelSettings, MdOutlineRestaurant } from "react-icons/md";
 import { AiOutlineUserDelete } from "react-icons/ai";
@@ -7,16 +8,15 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { Input } from "@material-tailwind/react";
-import { useInView, useMotionValue, useSpring } from "framer-motion";
+import { useMotionValue, useSpring } from "framer-motion";
 
 const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }) => {
   const ref = useRef(null);
   const motionValue = useMotionValue(from);
-
-  const damping = 20 + 40 * (1 / duration);
-  const stiffness = 100 * (1 / duration);
-
-  const springValue = useSpring(motionValue, { damping, stiffness });
+  const springValue = useSpring(motionValue, {
+    damping: 20 + 40 * (1 / duration),
+    stiffness: 100 * (1 / duration),
+  });
 
   useEffect(() => {
     const unsubscribe = springValue.on("change", (latest) => {
@@ -26,11 +26,7 @@ const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }
           minimumFractionDigits: 0,
           maximumFractionDigits: 0,
         };
-
-        const formattedNumber = Intl.NumberFormat("en-US", options).format(
-          latest.toFixed(0)
-        );
-
+        const formattedNumber = Intl.NumberFormat("en-US", options).format(latest.toFixed(0));
         ref.current.textContent = separator
           ? formattedNumber.replace(/,/g, separator)
           : formattedNumber;
@@ -49,9 +45,11 @@ const Users = () => {
   const [searchInput, setSearchInput] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const axiosSecure = useAxiosSecure();
-  const TABLE_HEAD = ["Information", "", "Action", "Admin", "Moderator ", "Owner "];
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserRole, setSelectedUserRole] = useState("");
 
-  // Filter users by tab and search
+  const TABLE_HEAD = ["Information",  "Action",  "Role"];
+
   const filteredUsers = users.filter((user) => {
     const userSearch =
       user.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -62,13 +60,12 @@ const Users = () => {
       activeTab === "all" ||
       (activeTab === "admin" && user?.role === "admin") ||
       (activeTab === "moderator" && user?.role === "moderator") ||
-      (activeTab === "owner" && user?.role === "owner" && user.restaurantAdddress || user?.restaurantNumber || user?.banner);
+      (activeTab === "owner" && user?.role === "owner");
 
     return userSearch && matchesTab;
   });
 
-  // Delete User
-  const handleDelete = (user) => {
+  const handleDelete = (userId) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -80,7 +77,7 @@ const Users = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure
-          .delete(`/users/${user}`)
+          .delete(`/users/${userId}`)
           .then(() => {
             refetch();
             Swal.fire("Deleted!", "The user has been deleted.", "success");
@@ -92,54 +89,34 @@ const Users = () => {
     });
   };
 
-  // Update Roles
-  const handleAdmin = (userId) => {
-    axiosSecure.patch(`/users/admin/${userId}`).then((res) => {
-      if (res.data.modifiedCount > 0) {
-        refetch();
-        toast.success("Successfully updated to Admin");
-      }
-    });
-  };
-
-  const handleModerator = (userId) => {
+  const updateRole = (userId, role) => {
     axiosSecure
-      .patch(`/users/moderator/${userId}`)
+      .patch(`/users/${role}/${userId}`)
       .then((res) => {
         if (res.data.modifiedCount > 0) {
           refetch();
-          toast.success("Successfully updated to Moderator");
+          toast.success(`Successfully updated to ${role.charAt(0).toUpperCase() + role.slice(1)}`);
         }
       })
       .catch(() => {
-        toast.error("Failed to update user to Moderator");
+        toast.error("Failed to update user role");
       });
-  };
-
-  const handleOwner = (userId) => {
-    axiosSecure.patch(`/users/restaurantOwner/${userId}`).then((res) => {
-      if (res.data.modifiedCount > 0) {
-        refetch();
-        toast.success("Successfully updated to Restaurant Owner");
-      }
-    });
   };
 
   return (
     <div className="max-w-7xl mx-auto min-h-full">
-      {/* Header Section */}
       <div className="mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold text-[#339179] mt-4">Manage Users  <CountUp
-          from={0}
-          to={users.length}
-          separator=","
-          duration={2}
-          className="text-4xl font-bold text-center text-[#339179]"
-        /></h2>
-        <br />
-        <div>
+        <h2 className="text-lg font-semibold text-[#339179] mt-4">
+          Manage Users{" "}
+          <CountUp
+            from={0}
+            to={users.length}
+            separator=","
+            duration={2}
+            className="text-4xl font-bold text-center text-[#339179]"
+          />
+        </h2>
 
-        </div>
         <div className="w-full px-4 md:w-64">
           <div className="relative">
             <MagnifyingGlassIcon className="absolute h-3 w-3 text-[#339179] top-3 left-4" />
@@ -156,15 +133,15 @@ const Users = () => {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="tabs mb-4 flex justify-center md:justify-start">
         {["all", "admin", "moderator", "owner"].map((tab) => (
           <button
             key={tab}
-            className={`tab ${activeTab === tab
+            className={`tab ${
+              activeTab === tab
                 ? "tab-active bg-red-800 text-white font-bold rounded-full shadow-2xl"
                 : "text-red-900 font-extrabold"
-              }`}
+            }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -172,13 +149,15 @@ const Users = () => {
         ))}
       </div>
 
-      {/* Table */}
       <div className="overflow-auto shadow-lg rounded-lg border">
         <table className="table-auto w-full">
           <thead className="bg-gray-100">
             <tr>
               {TABLE_HEAD.map((head) => (
-                <th key={head} className="px-4 py-2 text-[14px] text-[#339179] tracking-wide text-center">
+                <th
+                  key={head}
+                  className="px-4 py-2 text-[14px] text-[#339179] tracking-wide text-center"
+                >
                   {head}
                 </th>
               ))}
@@ -191,79 +170,39 @@ const Users = () => {
                   <td className="px-4 py-2 border">
                     <div className="flex items-center space-x-3">
                       <div className="indicator">
-                        {isNew && (
-                          <span className="indicator-item badge badge-primary">New</span>
-                        )}
-                        <img src={photo || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"} alt={`${name}'s photo`} className="w-10 h-10 rounded-full object-cover" />
+                        {isNew && <span className="indicator-item badge badge-primary">New</span>}
+                        <img
+                          src={photo || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
+                          alt={`${name}'s photo`}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
                       </div>
                       <div>
                         <p>{name}</p>
-                        <p className="text-sm text-gray-500">{email}</p>
-                        <p className="text-sm text-gray-500"> {restaurantAdddress}</p>
-                        <p className="text-sm text-gray-500"> {restaurantNumber}</p>
+                        <a href={`mailto:${email}`} className="text-sm underline text-blue-700">{email}</a>
+                        <p className="text-sm text-gray-500">{restaurantAdddress}</p>
+                        <a href={`tel:${restaurantNumber}`} className="text-sm underline text-blue-700">{restaurantNumber}</a>
                       </div>
                     </div>
                   </td>
+                  
                   <td className="px-4 py-2 border text-center">
-                    {/* Additional Details Based on Role */}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    <button
-                      className="text-xl font-extrabold shadow-2xl"
-                      onClick={() => handleDelete(_id)}
-                    >
+                    <button className="text-xl font-extrabold shadow-2xl" onClick={() => handleDelete(_id)}>
                       <AiOutlineUserDelete />
                     </button>
                   </td>
+                
                   <td className="px-4 py-2 border text-center">
-                    {role === "admin" ? (
-                      <span className="font-bold">Admin</span>
-                    ) : (
-                      <button
-                        className="text-xl font-extrabold shadow-2xl"
-                        onClick={() => handleAdmin(_id)}
-                      >
-                        <MdOutlineAdminPanelSettings />
-                      </button>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {role === "moderator" ? (
-                      <span className="font-bold">Moderator</span>
-                    ) : (
-                      <button
-                        className="text-xl font-extrabold shadow-2xl"
-                        onClick={() => handleModerator(_id)}
-                      >
-                        <MdOutlineAdminPanelSettings />
-                      </button>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {role === "owner" ? (
-                      <>
-                        <div className="flex items-center space-x-2 justify-center">
-                          {/* Display "New" indicator for new owners */}
-                          {isNew && (
-                            <div className="indicator">
-                              <span className="indicator-item badge badge-primary">new</span>
-                              <div className="bg-base-300 grid h-32 w-32 place-items-center">
-                                <MdOutlineRestaurant />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        {/* Display only restaurant address and number for owners */}
-                        Owner
-                      </>
-                    ) : (
-                      <button
-                        className="text-xl font-extrabold shadow-2xl"
-                        onClick={() => handleOwner(_id)}
-                      >
-                        <MdOutlineRestaurant />
-                      </button>
-                    )}
+                    <button
+                      className="btn btn-xs btn-outline"
+                      onClick={() => {
+                        setSelectedUserId(_id);
+                        setSelectedUserRole(role);
+                        document.getElementById("role_modal").showModal();
+                      }}
+                    >
+                      {role ? role.charAt(0).toUpperCase() + role.slice(1) : "Set Role"}
+                    </button>
                   </td>
                 </tr>
               ))
@@ -277,6 +216,33 @@ const Users = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
+      <dialog id="role_modal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+          <h3 className="font-bold text-lg mb-4">Select Role</h3>
+          <div className="flex flex-col gap-2">
+            {["user", "admin", "moderator", "owner"].map((roleOption) => (
+              <button
+                key={roleOption}
+                className={`btn ${
+                  selectedUserRole === roleOption ? "btn-success text-white" : "btn-outline"
+                }`}
+                disabled={selectedUserRole === roleOption}
+                onClick={() => {
+                  updateRole(selectedUserId, roleOption);
+                  document.getElementById("role_modal").close();
+                }}
+              >
+                Make {roleOption.charAt(0).toUpperCase() + roleOption.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 };

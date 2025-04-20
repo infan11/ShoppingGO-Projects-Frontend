@@ -39,7 +39,6 @@ const Register = () => {
             const usersInfo = {
                 name: data.displayName,
                 email: data.email,
-                role: "guest",
                 status: "Verified",
             };
 
