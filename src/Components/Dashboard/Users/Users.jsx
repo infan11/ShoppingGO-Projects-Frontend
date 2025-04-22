@@ -195,7 +195,7 @@ const Users = () => {
                   <td className="px-4 py-2 border text-center">
                     <button
                       className="btn btn-xs btn-outline"
-                      onClick={() => {
+                      onClick={() => {  
                         setSelectedUserId(_id);
                         setSelectedUserRole(role);
                         document.getElementById("role_modal").showModal();

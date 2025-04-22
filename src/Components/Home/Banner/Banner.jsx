@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 
 // Tailwind shimmer-only skeleton (Water-like shimmer effect)
 const BannerSkeleton = () => (
-  <div className="w-full h-[350px] bg-gradient-to-r from-gray-900 via-blue-200 to-blue-300 animate-pulse bg-[length:200%_100%] rounded-lg" />
+  <div className="w-full h-[350px]  animate-pulse bg-[length:200%_100%] rounded-lg" />
 );
 
 const Banner = () => {
@@ -14,9 +14,10 @@ const Banner = () => {
   const [imagesLoaded, setImagesLoaded] = useState(0);
 
   const banners = [
-    "https://i.ibb.co.com/xjTbNcp/home2.png",
-    "https://i.ibb.co.com/MCd7jXg/HOME1.png",
-    "https://i.ibb.co.com/XWzByRJ/home4.png",
+    "https://i.ibb.co.com/Sw3trw8M/Banner-3.png",
+    "https://i.ibb.co.com/nq29prp3/Banner-2.png",
+    "https://i.ibb.co.com/0pGXkHb3/Banner-1.png",
+ 
   ];
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const Banner = () => {
   };
 
   return (
-    <div className="relative w-full h-[350px]">
+    <div className="relative w-full lg:h-[350px]">
       {isLoading && <BannerSkeleton />} {/* Shimmer Skeleton Loading with water effect */}
 
       <Swiper
@@ -51,7 +52,7 @@ const Banner = () => {
               src={src}
               alt={`Banner ${idx + 1}`}
               onLoad={handleImageLoad}
-              className="w-full h-[350px] object-cover"
+              className="w-full lg:h-[350px]  object-cover"
             />
           </SwiperSlide>
         ))}
