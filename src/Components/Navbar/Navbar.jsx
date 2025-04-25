@@ -155,7 +155,7 @@ const Navbar = () => {
         SHOP
       </NavLink>
       <NavLink
-        to="/categories"
+        to="/categorise"
         className={({ isActive }) =>
         isActive
           ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"
@@ -553,7 +553,7 @@ const Navbar = () => {
                   </MenuItem>
 
                   <MenuItem> <NavLink
-                    to="/categories"
+                    to="/categorise"
                     className={({ isActive }) =>
                       isActive
                         ? "font-bold text-[#339179] border-b-2 border-red-[#339179] relative inline-block transition-colors duration-300 before:content-[''] before:absolute before:bottom-[-2px] before:left-0 before:w-full before:h-[2px] before:bg-[#339179] before:scale-100 before:transition-transform before:duration-300 hover:before:scale-100"

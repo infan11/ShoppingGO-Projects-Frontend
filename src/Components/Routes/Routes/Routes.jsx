@@ -43,6 +43,8 @@ import AddDistrictCollection from "../../Dashboard/AddDistrictCollection/AddDist
 import DistrictRes from "../../Home/DistrictAvailable/DistrictRes/DistrictRes";
 import Serach from "../../Navbar/Search/Serach";
 import DetailsShop from "../../Restaurants/DetailsShop/DetailsShop";
+import Categories from "../../Categories/Categories/Categories";
+import Deals from "../../Deals/Deals/Deals";
 
 
 export const router = createBrowserRouter([
@@ -56,7 +58,7 @@ export const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      
+
       {
         path: "/biryani",
         element: <Biryani />,
@@ -95,12 +97,22 @@ export const router = createBrowserRouter([
         element: <Restaurants />,
       },
       {
-        path : '/restaurantUpload/:restaurantName',
-        element :<DetailsShop/>
+        path: '/restaurantUpload/:restaurantName',
+        element: <DetailsShop />
       },
       {
-        path : '/restaurantUpload/district/:districtName',
-        element :  <DistrictRes/>
+        path: '/restaurantUpload/district/:districtName',
+        element: <DistrictRes />
+      },
+      // Categorise Components
+      {
+        path: "/categorise",
+        element: <Categories />
+      },
+      // Deals Components 
+      {
+        path: "/deals",
+        element: <Deals />
       },
       /// About Components
       {
@@ -127,14 +139,14 @@ export const router = createBrowserRouter([
       // user info Components
       {
         path: "/myProfile",
-        element:  <MyProfile/>
+        element: <MyProfile />
       },
 
-      
+
       // other Service components
       {
         path: "/search",
-        element : <Serach/>
+        element: <Serach />
       }
     ],
   },
@@ -165,7 +177,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/uploadInfo",
-        element: <PrivateRoutes><UploadInfo/></PrivateRoutes>,
+        element: <PrivateRoutes><UploadInfo /></PrivateRoutes>,
       },
       {
         path: "/dashboard/userHome",
@@ -185,7 +197,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/checkOutForm",
-        element: <CheckoutForm/>,
+        element: <CheckoutForm />,
       },
       {
         path: "/dashboard/paymentHistory",
@@ -193,15 +205,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/AddDistrictCollection",
-        element: <PrivateRoutes><AddDistrictCollection/></PrivateRoutes>,
+        element: <PrivateRoutes><AddDistrictCollection /></PrivateRoutes>,
       },
       {
         path: "/dashboard/paymentSuccess",
-        element: <PrivateRoutes><PaymentSuccess/></PrivateRoutes>,
+        element: <PrivateRoutes><PaymentSuccess /></PrivateRoutes>,
       },
       {
         path: "/dashboard/paymentPage",
-        element: <PrivateRoutes><PaymentPage/></PrivateRoutes>,
+        element: <PrivateRoutes><PaymentPage /></PrivateRoutes>,
       },
     ],
   },
