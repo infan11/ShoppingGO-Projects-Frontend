@@ -18,9 +18,7 @@ const BannerFour = () => {
 
   return (
     <div>
-      <p className="text-center font-bold text-xl text-[#339179] font-Caveat">
-        You prepare the food, we handle the rest
-      </p>
+ 
 
       <div className="relative w-full mt-5 mb-24">
         {/* Skeleton Loader */}

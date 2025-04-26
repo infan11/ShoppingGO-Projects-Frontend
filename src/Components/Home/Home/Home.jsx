@@ -15,10 +15,18 @@ const Home = () => {
             </Helmet>
          <Banner/>
          <BannerTwo/>
-         <BannerFour/>
          <AvailableItem/>
+         <br />
+         <br />
+        <BannerFour/>
+         <br />
+         <br />
          <ServeFood/>
+         <br />
+         <br />
          <DistrictAvailable/>
+         <br />
+         <br />
         </div>
     );
 };
