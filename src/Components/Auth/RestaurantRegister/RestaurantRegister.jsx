@@ -43,10 +43,11 @@ const RestaurantRegister = () => {
             });
 
             const usersInfo = {
-                name: data.displayName,
+                name: data?.displayName,
                 email: data.email,
                 restaurantAddress: data.restaurantAddress,
                 restaurantNumber: parseFloat(data.phoneNumber),
+                date : new Date()
 
             };
 

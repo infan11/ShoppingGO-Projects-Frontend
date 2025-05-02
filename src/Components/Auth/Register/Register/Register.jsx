@@ -37,10 +37,12 @@ const Register = () => {
             console.log("Updated User:", res.user);
 
             const usersInfo = {
-                name: data.displayName,
+                name: data?.displayName,
                 email: data.email,
                 status: "Verified",
-            };
+                date : new Date()
+
+             };
 
             await toast.promise(
                 axiosSecure.put("/users", usersInfo),
@@ -67,9 +69,10 @@ const Register = () => {
 
             const usersInfo = {
                 email: res.user.email,
-                name: res.user.displayName,
+                name: res.user?.displayName,
                 role: "guest",
                 status: "Verified",
+                date : new Date()
             };
 
             await toast.promise(

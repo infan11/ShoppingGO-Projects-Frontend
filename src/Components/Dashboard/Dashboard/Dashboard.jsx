@@ -81,7 +81,7 @@ const Dashboard = () => {
                 <Link to="/dashboard/users">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><LuUserSearch /></ListItemPrefix>
-                    Users
+                   All Users
                   </ListItem>
                 </Link>
                 <Link to="/dashboard/myOrder">
@@ -114,18 +114,18 @@ const Dashboard = () => {
                     Update Food
                   </ListItem>
                 </Link>
-                <Link to="/dashboard/moderator">
+                {/* <Link to="/dashboard/moderator">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><MdOutlineAddModerator /></ListItemPrefix>
                     Moderator Home
                   </ListItem>
-                </Link>
-                <Link to="/dashboard/ownerHome">
+                </Link> */}
+                {/* <Link to="/dashboard/ownerHome">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><FaRegUser /></ListItemPrefix>
                     Owner Home
                   </ListItem>
-                </Link>
+                </Link> */}
                 <Link to="/dashboard/userHome">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><FaRegUser /></ListItemPrefix>
@@ -143,12 +143,12 @@ const Dashboard = () => {
                     Moderator Home
                   </ListItem>
                 </Link>
-                <Link to="/dashboard/updateFood">
+                {/* <Link to="/dashboard/updateFood">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><RxUpdate /></ListItemPrefix>
                     Update Food
                   </ListItem>
-                </Link>
+                </Link> */}
                 <Link to="/dashboard/ownerHome">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><FaRegUser /></ListItemPrefix>
