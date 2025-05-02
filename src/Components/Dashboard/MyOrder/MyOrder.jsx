@@ -173,12 +173,12 @@ const MyOrder = () => {
                         -
                       </button>
                       <input
-                        type="number"
+                      
                         min="1"
                         max="100"
-                        className="w-10 text-center border mx-1 text-[#339179]"
+                        className="w-10  bg-white text-center  mx-1 text-[#339179]"
                         value={quantities[item._id] || 1}
-                        onChange={(e) => handleQuantityChange(item._id, e.target.value)}
+                        onChange={(e) =>  handleQuantityChange(item._id, e.target.value)}
                       />
                       <button
                         type="button"

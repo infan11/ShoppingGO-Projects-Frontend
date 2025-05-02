@@ -88,10 +88,14 @@ const Users = () => {
       }
     });
   };
-
   const updateRole = (userId, role) => {
+    let apiRole = role;
+    if (role === "owner") {
+      apiRole = "restaurantOwner"; 
+    }
+    
     axiosSecure
-      .patch(`/users/${role}/${userId}`)
+      .patch(`/users/${apiRole}/${userId}`)
       .then((res) => {
         if (res.data.modifiedCount > 0) {
           refetch();
@@ -99,10 +103,10 @@ const Users = () => {
         }
       })
       .catch(() => {
-        toast.error("Failed to update user role");
+        toast.error("Failed to update user role");  
       });
   };
-
+  
   return (
     <div className="max-w-7xl mx-auto min-h-full">
       <div className="mb-4 flex flex-col md:flex-row items-center justify-between gap-4">

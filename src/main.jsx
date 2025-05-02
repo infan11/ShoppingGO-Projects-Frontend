@@ -8,6 +8,8 @@ import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Circles } from 'react-loader-spinner';
 import LanguageProvider from './Components/Provider/LanguageProvider/LanguageProvider';
+import store from './Components/Hooks/store';
+import { Provider } from 'react-redux';
 
 const queryClient = new QueryClient();
 
@@ -39,15 +41,17 @@ const AppWithLoader = () => {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <LanguageProvider>
-    <AuthProvider>
+   <Provider store={store}>
+   <AuthProvider >
     
-      <Toaster />
-      <QueryClientProvider client={queryClient}>
-        <div className="font-Kanit bg-white text-black">
-          <AppWithLoader />
-        </div>
-      </QueryClientProvider>
-    </AuthProvider>
+    <Toaster />
+    <QueryClientProvider client={queryClient}>
+      <div className="font-Kanit bg-white text-black">
+        <AppWithLoader />
+      </div>
+    </QueryClientProvider>
+  </AuthProvider>
+   </Provider>
     </LanguageProvider>
   </StrictMode>
 );
