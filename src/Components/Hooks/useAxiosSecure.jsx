@@ -1,9 +1,9 @@
+// src/Hooks/useAxiosSecure.js
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
-import { useSelector } from "react-redux"; // ✅ Import useSelector
 
-export const axiosSecure = axios.create({
+const axiosSecure = axios.create({
   baseURL: "http://localhost:5000",
 });
 
@@ -11,26 +11,21 @@ const useAxiosSecure = () => {
   const { logOut } = useAuth();
   const navigate = useNavigate();
 
-  const token = useSelector((state) => state.auth.token); // ✅ Get token from Redux
-
-  // Request interceptor
+  // REQUEST Interceptor
   axiosSecure.interceptors.request.use(
-    function (config) {
+    (config) => {
+      const token = localStorage.getItem("jwt-token");
       if (token) {
-        config.headers.authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`; // ✅ FIXED TYPO: "Bearar" => "Bearer"
       }
       return config;
     },
-    function (error) {
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
   );
 
-  // Response interceptor
+  // RESPONSE Interceptor
   axiosSecure.interceptors.response.use(
-    function (response) {
-      return response;
-    },
+    (response) => response,
     async (error) => {
       const status = error?.response?.status;
       if (status === 401 || status === 403) {

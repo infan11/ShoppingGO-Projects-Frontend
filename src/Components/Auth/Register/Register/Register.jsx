@@ -32,17 +32,17 @@ const Register = () => {
                 throw new Error("User creation failed");
             }
 
-            await updateUserProfile( { name: data.displayName});
+            // ✅ FIXED: Use displayName instead of name
+            await updateUserProfile({ displayName: data.displayName });
             await res.user.reload();
             console.log("Updated User:", res.user);
 
             const usersInfo = {
-                name: data?.displayName,
+                name: data.displayName,
                 email: data.email,
                 status: "Verified",
-                date : new Date()
-
-             };
+                date: new Date()
+            };
 
             await toast.promise(
                 axiosSecure.put("/users", usersInfo),
@@ -69,10 +69,10 @@ const Register = () => {
 
             const usersInfo = {
                 email: res.user.email,
-                name: res.user?.displayName,
+                name: res.user.displayName,
                 role: "guest",
                 status: "Verified",
-                date : new Date()
+                date: new Date()
             };
 
             await toast.promise(
@@ -128,10 +128,9 @@ const Register = () => {
                                             {showPassword ? <EyeOff className="w-5 h-5 text-[#1ad46d]" /> : <Eye className="w-5 h-5 text-[#1ad46d]" />}
                                         </button>
                                     </div>
-                                        {errors.password?.type && <span className="text-[#ff1818] ">This field is reqiure</span>}
-                                        {errors.password?.type === 'minLength' && <span className="text-[#ff1818] ">This pass must 6 Characters</span>}
-                                        {errors.password?.type === 'maxLength' && <span className="text-[#ff1818] ">This pass only 8 Characters</span>}
-                                    
+                                    {errors.password?.type && <span className="text-[#ff1818]">This field is required</span>}
+                                    {errors.password?.type === 'minLength' && <span className="text-[#ff1818]">This pass must be at least 6 characters</span>}
+                                    {errors.password?.type === 'maxLength' && <span className="text-[#ff1818]">This pass must be at most 8 characters</span>}
                                 </div>
 
                                 <Checkbox
@@ -152,9 +151,8 @@ const Register = () => {
                                 <button type="submit" className="w-full uppercase bg-[#339179] text-white mt-2 btn rounded-badge">
                                     Sign In
                                 </button>
-
-
                             </form>
+
                             <div className="divider">OR</div>
 
                             <button onClick={handleGoogle} className="flex text-[14px] bg-white items-center font-bold btn rounded-full">

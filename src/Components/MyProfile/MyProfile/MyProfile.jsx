@@ -1,40 +1,56 @@
 import { useState, useContext, useRef } from "react";
-import { FcBusinessman } from "react-icons/fc";
+import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../Provider/AuthProvider/AuthProvider";
 import { imageUpload } from "../../Hooks/imageHooks";
-import { IoCloudUploadOutline } from "react-icons/io5";
+
 const MyProfile = () => {
   const { user, updateUserProfile } = useContext(AuthContext);
   const [profileImage, setProfileImage] = useState(user?.photoURL || "");
   const [previewImage, setPreviewImage] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null); // Track selected file
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // Handle Image Selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file); 
+      setSelectedFile(file);
       setPreviewImage(URL.createObjectURL(file));
     }
   };
 
-  // Open File Picker on Image Click
   const handleImageClick = () => {
     fileInputRef.current.click();
   };
 
-  // Handle Profile Update
   const handleUpdate = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const name = form.name.value;
-
-    let imageUrl = profileImage; // Default to current profile image
-
+    const name = form.name.value.trim();
+  
+    if (name !== user?.displayName) {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/users/check-name?name=${encodeURIComponent(name)}&email=${encodeURIComponent(user?.email)}`
+        );
+        if (!res.ok) throw new Error("Server error while checking name");
+        const data = await res.json();
+  
+        if (data.exists) {
+          toast.error("This name is already taken.");
+          return;
+        }
+      } catch (error) {
+        console.error("Name check failed:", error);
+        toast.error("Failed to validate name.");
+        return;
+      }
+    }
+  
+    let imageUrl = profileImage;
+  
     if (selectedFile) {
       try {
         const imageData = await imageUpload(selectedFile);
@@ -45,17 +61,15 @@ const MyProfile = () => {
         return;
       }
     }
-
+  
     handleUpdateUser(name, imageUrl);
   };
-
-  // Update Firebase Profile
   const handleUpdateUser = (name, photo) => {
     updateUserProfile({ displayName: name, photoURL: photo })
       .then(() => {
         setProfileImage(photo);
         setPreviewImage("");
-        setSelectedFile(null); // Reset file state after update
+        setSelectedFile(null);
         toast.success("Profile Updated Successfully");
         navigate("/myProfile");
       })
@@ -66,63 +80,60 @@ const MyProfile = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-11/12 md:w-8/12 lg:w-6/12 border border-cyan-300 rounded-lg shadow-xl p-10">
-        
-        {/* Profile Image Section */} 
-        <div className="relative w-40 h-40 mx-auto">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f0f4f8] to-[#d4eaf7] py-10">
+      <div className="w-full max-w-xl bg-white bg-opacity-70 backdrop-blur-md rounded-2xl shadow-2xl p-10">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Update Your Profile</h2>
+
+        {/* Profile Picture */}
+        <div className="relative w-40 h-40 mx-auto mb-6 group">
           <img
-            className="w-full h-full rounded-full object-cover border-4 border-[#1da335] cursor-pointer transition duration-300 hover:opacity-45"
             src={previewImage || profileImage || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
             alt="Profile"
             onClick={handleImageClick}
+            className="w-full h-full rounded-full object-cover border-4 border-[#1da335] shadow-md cursor-pointer group-hover:opacity-70 transition duration-300"
           />
           <div
-            className="absolute inset-0 flex  rounded-full items-center justify-center bg-black bg-opacity-50 text-white text-sm font-semibold opacity-0 hover:opacity-100 transition duration-300 cursor-pointer"
             onClick={handleImageClick}
+            className="absolute inset-0 flex items-center justify-center text-white bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 rounded-full transition duration-300 cursor-pointer"
           >
-           <IoCloudUploadOutline />
+            <IoCloudUploadOutline className="text-3xl" />
           </div>
         </div>
 
-        {/* Hidden File Input */}
+        {/* Hidden file input */}
         <input
           type="file"
           accept="image/*"
-          name="photo"
-          className="hidden"
           ref={fileInputRef}
           onChange={handleImageChange}
+          className="hidden"
         />
 
-        {/* Profile Update Form */}
-        <form onSubmit={handleUpdate} className="mt-6 space-y-4">
-          {/* Email Field */}
-          <div className="relative w-full">
-            <input
-              type="email"
-              name="email"
-              className="block py-2 px-4 w-full bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-              defaultValue={user?.email}
-              readOnly
-            />
-          </div>
+        {/* Form */}
+        <form onSubmit={handleUpdate} className="space-y-5">
+          {/* Email */}
+          <input
+            type="email"
+            name="email"
+            defaultValue={user?.email}
+            readOnly
+            className="w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
 
-          {/* Name Field */}
-          <div className="relative w-full">
-            <input
-              type="text"
-              name="name"
-              className="block py-2 px-4 w-full bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 font-Kanit " placeholder="Type Your Name"
-              defaultValue={user?.displayName}
-              required
-            />
-          </div>
+          {/* Name */}
+          <input
+            type="text"
+            name="name"
+            defaultValue={user?.displayName}
+            placeholder="Type your name"
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
 
-          {/* Update Profile Button */}
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-[#339179] text-white py-2 rounded-lg font-semibold shadow-md hover:bg-[#339179] transition duration-300"
+            className="w-full py-3 bg-[#1da335] text-white font-semibold rounded-md shadow-lg hover:opacity-90 transition duration-300"
           >
             Update Profile
           </button>

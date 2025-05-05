@@ -194,7 +194,7 @@ const Users = () => {
                         </div>
                         <div>
                           <p className="font-semibold">{name}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
                             {new Date(date).toLocaleString()}
                           </p>
                           <a href={`mailto:${email}`} className="text-sm text-blue-600 underline">
@@ -203,10 +203,11 @@ const Users = () => {
                           {restaurantAdddress && (
                             <p className="text-xs text-gray-500">{restaurantAdddress}</p>
                           )}
+                          <br />
                           {restaurantNumber && (
                             <a
                               href={`tel:${restaurantNumber}`}
-                              className="text-xs text-blue-600 underline"
+                              className="text-xs text-gray-900"
                             >
                               {restaurantNumber}
                             </a>
