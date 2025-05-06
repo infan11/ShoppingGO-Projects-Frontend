@@ -108,12 +108,7 @@ const Dashboard = () => {
                     Payment History
                   </ListItem>
                 </Link>
-                <Link to="/dashboard/updateFood">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RxUpdate /></ListItemPrefix>
-                    Update Food
-                  </ListItem>
-                </Link>
+              
                 {/* <Link to="/dashboard/moderator">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><MdOutlineAddModerator /></ListItemPrefix>
@@ -196,12 +191,7 @@ const Dashboard = () => {
                     Upload Info
                   </ListItem>
                 </Link>
-                <Link to="/dashboard/updateFood">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RxUpdate /></ListItemPrefix>
-                    Update Food
-                  </ListItem>
-                </Link>
+              
                 <Link to="/dashboard/myOrder">
                   <ListItem className={menuItemClass}>
                     <ListItemPrefix><RiShoppingBag4Line /></ListItemPrefix>

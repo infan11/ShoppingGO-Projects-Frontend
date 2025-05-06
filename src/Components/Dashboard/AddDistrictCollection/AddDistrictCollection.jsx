@@ -47,8 +47,9 @@ const AddDistrictCollection = () => {
         }
 
         const district = {
-            photo: imageUrl,
-            districtName: data.districtName
+            photo: imageUrl || "https://i.ibb.co.com/HL4RKtR3/cox-sbazar.jpg",
+            districtName: data.districtName,
+            
         };
 
         axiosSecure.post("/districtAvailable", district)

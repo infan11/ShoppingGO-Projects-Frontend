@@ -9,17 +9,15 @@ import Swal from "sweetalert2";
 import { AiOutlineDelete } from "react-icons/ai";
 
 import { RxUpdate } from "react-icons/rx";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
-import useAuth from "../../Hooks/useAuth";
-import useAddFood from "../../Hooks/useAddFood";
-import useAdmin from "../../Hooks/useAdmin";
-import useModerator from "../../Hooks/useModerator";
-import useRestaurantData from "../../Hooks/useRestaurantData";
-import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAuth from "../../../Hooks/useAuth";
+import useAddFood from "../../../Hooks/useAddFood";
+import useAdmin from "../../../Hooks/useAdmin";
+import useModerator from "../../../Hooks/useModerator";
+import useRestaurantData from "../../../Hooks/useRestaurantData";
+import useRestaurantOwner from "../../../Hooks/useRestaurantOwner";
 
-
-
-const Chinese = () => {
+const Oppo = () => {
   const { restaurantName } = useParams();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -32,17 +30,16 @@ const Chinese = () => {
   const [isOwner] = useRestaurantOwner();
   const [isRestaurantData, refetchTwo] = useRestaurantData();
   const [existingItem, setExistingItem] = useState(false);
+  const BurgerFoods = isRestaurantData
+    ?.flatMap((restaurant) =>
+      restaurant?.foods?.map((food) => ({
+        ...food,
+        restaurantName: restaurant?.restaurantName,
+      }))
+    )
+    ?.filter((food) => food?.category === "Burger") || [];
 
-  const ChineseFoods = isRestaurantData
-  ?.flatMap((restaurant) =>
-    restaurant?.foods?.map((food) => ({
-      ...food,
-      restaurantName: restaurant?.restaurantName,
-    }))
-  )
-  ?.filter((food) => food?.category === "Chinese") || []; 
-
-console.log("Chinese Foods Data:", ChineseFoods);
+  console.log("Burger Foods Data:", BurgerFoods);
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -66,7 +63,7 @@ console.log("Chinese Foods Data:", ChineseFoods);
   }, [user, axiosSecure, cart.foodName]);
 
   // ✅ Handle Food Deletion
- 
+
   // ✅ Handle Add Food to Cart
   const handleAddFood = (food) => {
     if (user && user.email) {
@@ -125,8 +122,8 @@ console.log("Chinese Foods Data:", ChineseFoods);
       ) : null} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 px-6 lg:px-4">
-        {ChineseFoods.length > 0 ? (
-          ChineseFoods.map((food, index) => ( // ✅ Fixed `ChineseFoods.foods`
+        {BurgerFoods.length > 0 ? (
+          BurgerFoods.map((food, index) => ( // ✅ Fixed `BurgerFoods.foods`
             <motion.div key={index} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lgw-[330px] h-[360px]  lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                 <div className="relative overflow-hidden rounded-md">
@@ -136,15 +133,13 @@ console.log("Chinese Foods Data:", ChineseFoods);
                   <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.foodName || "Unavailable"}</p>
                   {/* <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.category || "Unavailable"}</p> */}
                   <div className="flex justify-between items-center">
-                   <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-sm">
                       Delicious {food.foodName} from{" "}
                       <Link to={`/restaurantUpload/${food.restaurantName}`}>
                         <span className="font-bold">{food.restaurantName}</span>
                       </Link>
                       . Price: ${food.price}
                     </p>
-
-                
 
                     {existingItem ? (
                       <Link to="/dashboard/myOrder">
@@ -174,4 +169,4 @@ console.log("Chinese Foods Data:", ChineseFoods);
   );
 };
 
-export default Chinese;
+export default Oppo;

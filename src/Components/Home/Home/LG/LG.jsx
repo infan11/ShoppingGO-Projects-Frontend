@@ -14,10 +14,11 @@ import useAuth from "../../../Hooks/useAuth";
 import useAddFood from "../../../Hooks/useAddFood";
 import useAdmin from "../../../Hooks/useAdmin";
 import useModerator from "../../../Hooks/useModerator";
-import useRestaurantData from "../../../Hooks/useRestaurantData";
 import useRestaurantOwner from "../../../Hooks/useRestaurantOwner";
+import useRestaurantData from "../../../Hooks/useRestaurantData";
 
-const Burger = () => {
+
+const LG = () => {
   const { restaurantName } = useParams();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -30,17 +31,18 @@ const Burger = () => {
   const [isOwner] = useRestaurantOwner();
   const [isRestaurantData, refetchTwo] = useRestaurantData();
   const [existingItem, setExistingItem] = useState(false);
-  const BurgerFoods = isRestaurantData
+
+ 
+    const ChickenFoods = isRestaurantData
     ?.flatMap((restaurant) =>
       restaurant?.foods?.map((food) => ({
         ...food,
         restaurantName: restaurant?.restaurantName,
       }))
     )
-    ?.filter((food) => food?.category === "Burger") || [];
-
-  console.log("Burger Foods Data:", BurgerFoods);
-
+    ?.filter((food) => food?.category === "Chicken") || []; 
+  
+  console.log("Chicken Foods Data:", ChickenFoods);
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -63,7 +65,7 @@ const Burger = () => {
   }, [user, axiosSecure, cart.foodName]);
 
   // ✅ Handle Food Deletion
-
+ 
   // ✅ Handle Add Food to Cart
   const handleAddFood = (food) => {
     if (user && user.email) {
@@ -122,8 +124,8 @@ const Burger = () => {
       ) : null} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 px-6 lg:px-4">
-        {BurgerFoods.length > 0 ? (
-          BurgerFoods.map((food, index) => ( // ✅ Fixed `BurgerFoods.foods`
+        {ChickenFoods.length > 0 ? (
+          ChickenFoods.map((food, index) => ( // ✅ Fixed `ChickenFoods.foods`
             <motion.div key={index} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lgw-[330px] h-[360px]  lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                 <div className="relative overflow-hidden rounded-md">
@@ -133,13 +135,15 @@ const Burger = () => {
                   <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.foodName || "Unavailable"}</p>
                   {/* <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.category || "Unavailable"}</p> */}
                   <div className="flex justify-between items-center">
-                    <p className="text-red-500 text-sm">
+                   <p className="text-red-500 text-sm">
                       Delicious {food.foodName} from{" "}
                       <Link to={`/restaurantUpload/${food.restaurantName}`}>
                         <span className="font-bold">{food.restaurantName}</span>
                       </Link>
                       . Price: ${food.price}
                     </p>
+
+                
 
                     {existingItem ? (
                       <Link to="/dashboard/myOrder">
@@ -169,4 +173,4 @@ const Burger = () => {
   );
 };
 
-export default Burger;
+export default LG;

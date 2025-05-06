@@ -13,7 +13,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import useRestaurantData from "../../Hooks/useRestaurantData";
 import { RxUpdate } from "react-icons/rx";
 
-const Biryani = () => {
+const Addidas = () => {
   const { restaurantName } = useParams();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -167,4 +167,4 @@ console.log("Burger Foods Data:", biryaniFoods);
   );
 };
 
-export default Biryani;
+export default Addidas;

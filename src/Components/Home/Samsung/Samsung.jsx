@@ -9,17 +9,16 @@ import Swal from "sweetalert2";
 import { AiOutlineDelete } from "react-icons/ai";
 
 import { RxUpdate } from "react-icons/rx";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import useAuth from "../../Hooks/useAuth";
 import useAddFood from "../../Hooks/useAddFood";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
-import useRestaurantData from "../../Hooks/useRestaurantData";
 import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
+import useRestaurantData from "../../Hooks/useRestaurantData";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 
-
-const Juice = () => {
+const Samsung = () => {
   const { restaurantName } = useParams();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -32,17 +31,17 @@ const Juice = () => {
   const [isOwner] = useRestaurantOwner();
   const [isRestaurantData, refetchTwo] = useRestaurantData();
   const [existingItem, setExistingItem] = useState(false);
-    const JuiceFoods = isRestaurantData
+
+    const BeefFoods= isRestaurantData
     ?.flatMap((restaurant) =>
       restaurant?.foods?.map((food) => ({
         ...food,
         restaurantName: restaurant?.restaurantName,
       }))
     )
-    ?.filter((food) => food?.category === "Juice") || []; 
+    ?.filter((food) => food?.category === "Beef") || []; 
   
-  console.log("Juice Foods Data:", JuiceFoods);
-
+  console.log("Beef Foods Data:", BeefFoods);
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -124,8 +123,8 @@ const Juice = () => {
       ) : null} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 px-6 lg:px-4">
-        {JuiceFoods.length > 0 ? (
-          JuiceFoods.map((food, index) => ( // ✅ Fixed `JuiceFoods.foods`
+        {BeefFoods.length > 0 ? (
+          BeefFoods.map((food, index) => ( // ✅ Fixed `BeefFoods.foods`
             <motion.div key={index} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lgw-[330px] h-[360px]  lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                 <div className="relative overflow-hidden rounded-md">
@@ -173,4 +172,4 @@ const Juice = () => {
   );
 };
 
-export default Juice;
+export default Samsung;

@@ -20,14 +20,7 @@ import OwnerHome from "../../Dashboard/OwnerHome/OwnerHome";
 import UserHome from "../../Dashboard/UserHome/UserHome";
 import UpdateFood from "../../Dashboard/UpdateFood/UpdateFood";
 import PaymentHistory from "../../Dashboard/PaymentHistory/PaymentHistory";
-import Biryani from "../../Home/Biryani/Biryani";
-import Pizza from "../../Home/Pizza/Pizza";
-import Chicken from "../../Home/Home/Chicken/Chicken";
-import Chinese from "../../Home/Chinese/Chinese";
-import Juice from "../../Home/Juice/Juice";
-import Cake from "../../Home/Cake/Cake";
-import Beef from "../../Home/Beef/Beef";
-import Burger from "../../Home/Home/Burger/Burger";
+
 import Users from "../../Dashboard/Users/Users";
 import Dashboard from "../../Dashboard/Dashboard/Dashboard";
 import MyOrder from "../../Dashboard/MyOrder/MyOrder";
@@ -45,6 +38,14 @@ import Serach from "../../Navbar/Search/Serach";
 import DetailsShop from "../../Restaurants/DetailsShop/DetailsShop";
 import Categories from "../../Categories/Categories/Categories";
 import Deals from "../../Deals/Deals/Deals";
+import Samsung from "../../Home/Samsung/Samsung";
+import Apple from "../../Home/Apple/Apple";
+import Oppo from "../../Home/Home/Oppo/Oppo";
+import Rolex from "../../Home/Rolex/Rolex";
+import LG from "../../Home/Home/LG/LG";
+import Xiaomi from "../../Home/Xiaomi/Xiaomi";
+import Hp from "../../Home/Hp/Hp";
+import Addidas from "../../Home/Addidas/Addidas";
 
 
 export const router = createBrowserRouter([
@@ -61,35 +62,35 @@ export const router = createBrowserRouter([
 
       {
         path: "/biryani",
-        element: <Biryani />,
+        element: <Samsung/>,
       },
       {
         path: "/pizza",
-        element: <Pizza />,
+        element: <Apple/>,
       },
       {
         path: "/chicken",
-        element: <Chicken />,
+        element: <Oppo/>,
       },
       {
         path: "/chinese",
-        element: <Chinese />,
+        element: <Rolex/>,
       },
       {
         path: "/juice",
-        element: <Juice />,
+        element:  <LG/>,
       },
       {
         path: "/cake",
-        element: <Cake />,
+        element: <Xiaomi/>,
       },
       {
         path: "/beef",
-        element: <Beef />,
+        element: <Addidas/>,
       },
       {
         path: "/burger",
-        element: <Burger />,
+        element: <Hp/>,
       },
       // shop Components
       {

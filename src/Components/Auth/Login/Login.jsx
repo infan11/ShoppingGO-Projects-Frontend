@@ -118,12 +118,12 @@ const Login = () => {
                                 </form>
 
                                 <div className=" mx-auto "> <button onClick={hnadleGoogle} className="flex bg-white text-[14px] items-center font-bold btn rounded-full"><FcGoogle /> Continue With Google</button></div>
-                                <Typography color="gray" className="mt-4 text-center font-normal">
-                                    Create a new account?{" "}
-                                    <a href="/register" className="font-medium text-gray-900">
-                                        Sign in
-                                    </a>
-                                </Typography>
+                                <Typography color="gray" className="mt-6 text-center text-sm">
+                            Create a new account?{" "}
+                            <a href="/register" className="text-teal-600 font-semibold hover:underline">
+                                Sign in
+                            </a>
+                        </Typography>
 
                             </Card>
                         </div>

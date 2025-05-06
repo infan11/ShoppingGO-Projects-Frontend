@@ -5,6 +5,7 @@ import ServeFood from "../ServeFood/ServeFood";
 import AvailableItem from "../AvailableItem/AvailableItem";
 import BannerFour from "../bannerFour/BannerFour";
 import DistrictAvailable from "../DistrictAvailable/DistrictAvailable/DistrictAvailable";
+import AvailableBrand from "../AvailableBrand/AvailableBrand/AvailableBrand";
 
 const Home = () => {
     return (
@@ -17,9 +18,15 @@ const Home = () => {
          <AvailableItem/>
          <br />
          <br />
+
         <BannerFour/>
          <br />
          <br />
+
+         <AvailableBrand/>
+         <br />
+         <br />
+         
          <ServeFood/>
          <br />
          <br />

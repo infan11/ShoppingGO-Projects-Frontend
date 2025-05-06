@@ -33,7 +33,7 @@ const MyProfile = () => {
     if (name !== user?.displayName) {
       try {
         const res = await fetch(
-          `http://localhost:5000/users/check-name?name=${encodeURIComponent(name)}&email=${encodeURIComponent(user?.email)}`
+          `https://foodhub-backend.vercel.app/users/check-name?name=${encodeURIComponent(name)}&email=${encodeURIComponent(user?.email)}`
         );
         if (!res.ok) throw new Error("Server error while checking name");
         const data = await res.json();

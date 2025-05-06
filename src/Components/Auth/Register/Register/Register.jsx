@@ -159,9 +159,12 @@ const Register = () => {
                                 <FcGoogle /> Continue With Google
                             </button>
 
-                            <Typography color="gray" className="mt-4 text-center font-normal">
-                                Already have an account? <a href="/login" className="font-medium text-gray-900">Log in</a>
-                            </Typography>
+                            <Typography color="gray" className="mt-6 text-center text-sm">
+                            Already have an account?{" "}
+                            <a href="/login" className="text-teal-600 font-semibold hover:underline">
+                                Sign in
+                            </a>
+                        </Typography>
                         </Card>
                     </div>
                 </div>

@@ -9,16 +9,17 @@ import Swal from "sweetalert2";
 import { AiOutlineDelete } from "react-icons/ai";
 
 import { RxUpdate } from "react-icons/rx";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import useAuth from "../../Hooks/useAuth";
 import useAddFood from "../../Hooks/useAddFood";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
-import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
 import useRestaurantData from "../../Hooks/useRestaurantData";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
 
 
-const Beef = () => {
+
+const Nestle = () => {
   const { restaurantName } = useParams();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -32,16 +33,17 @@ const Beef = () => {
   const [isRestaurantData, refetchTwo] = useRestaurantData();
   const [existingItem, setExistingItem] = useState(false);
 
-    const BeefFoods= isRestaurantData
-    ?.flatMap((restaurant) =>
-      restaurant?.foods?.map((food) => ({
-        ...food,
-        restaurantName: restaurant?.restaurantName,
-      }))
-    )
-    ?.filter((food) => food?.category === "Beef") || []; 
-  
-  console.log("Beef Foods Data:", BeefFoods);
+  const ChineseFoods = isRestaurantData
+  ?.flatMap((restaurant) =>
+    restaurant?.foods?.map((food) => ({
+      ...food,
+      restaurantName: restaurant?.restaurantName,
+    }))
+  )
+  ?.filter((food) => food?.category === "Chinese") || []; 
+
+console.log("Chinese Foods Data:", ChineseFoods);
+
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -123,8 +125,8 @@ const Beef = () => {
       ) : null} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 px-6 lg:px-4">
-        {BeefFoods.length > 0 ? (
-          BeefFoods.map((food, index) => ( // ✅ Fixed `BeefFoods.foods`
+        {ChineseFoods.length > 0 ? (
+          ChineseFoods.map((food, index) => ( // ✅ Fixed `ChineseFoods.foods`
             <motion.div key={index} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lgw-[330px] h-[360px]  lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                 <div className="relative overflow-hidden rounded-md">
@@ -172,4 +174,4 @@ const Beef = () => {
   );
 };
 
-export default Beef;
+export default Nestle;
