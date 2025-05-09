@@ -51,21 +51,33 @@ const AuthProvider = ({ children }) => {
     const updateUserProfile = async ({ displayName, photoURL }) => {
         if (auth.currentUser) {
             try {
+                // Update Firebase Auth
                 await updateProfile(auth.currentUser, {
                     displayName,
                     photoURL,
                 });
-
+    
+                // Refresh user data
                 await auth.currentUser.reload();
-
+    
                 const updatedUser = {
                     uid: auth.currentUser.uid,
                     email: auth.currentUser.email,
                     displayName: auth.currentUser.displayName,
                     photoURL: auth.currentUser.photoURL,
                 };
-
+    
+                // Update user state
                 setUser(updatedUser);
+    
+                // Send updated info to your database
+                await axiosPublic.put(`/users/${updatedUser.email}`, {
+                    uid: updatedUser.uid,
+                    name: updatedUser.displayName,
+                    photo: updatedUser.photoURL,
+                    email: updatedUser.email,
+                    date: Date.now()
+                });
                 toast.success("Profile updated successfully");
             } catch (error) {
                 console.error("Profile update failed:", error);
@@ -73,7 +85,6 @@ const AuthProvider = ({ children }) => {
             }
         }
     };
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);

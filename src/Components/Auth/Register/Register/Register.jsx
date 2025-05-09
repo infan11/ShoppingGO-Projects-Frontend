@@ -70,9 +70,10 @@ const Register = () => {
             const usersInfo = {
                 email: res.user.email,
                 name: res.user.displayName,
+                date: new Date(),
                 role: "guest",
                 status: "Verified",
-                date: new Date()
+            
             };
 
             await toast.promise(

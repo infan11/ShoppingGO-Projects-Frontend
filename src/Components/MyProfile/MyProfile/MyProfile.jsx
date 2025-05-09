@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../Provider/AuthProvider/AuthProvider";
 import { imageUpload } from "../../Hooks/imageHooks";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const MyProfile = () => {
   const { user, updateUserProfile } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const MyProfile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-
+  const axiosSecure = useAxiosSecure();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -29,15 +30,17 @@ const MyProfile = () => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value.trim();
+    const dob = form.dob.value;
+    const phoneNumber = form.phoneNumber.value;
+    const address = form.address.value;
   
     if (name !== user?.displayName) {
       try {
         const res = await fetch(
-          `https://foodhub-backend.vercel.app/users/check-name?name=${encodeURIComponent(name)}&email=${encodeURIComponent(user?.email)}`
+          `http://localhost:5000/users/check-name?name=${encodeURIComponent(name)}&email=${encodeURIComponent(user?.email)}`
         );
         if (!res.ok) throw new Error("Server error while checking name");
         const data = await res.json();
-  
         if (data.exists) {
           toast.error("This name is already taken.");
           return;
@@ -62,23 +65,36 @@ const MyProfile = () => {
       }
     }
   
-    handleUpdateUser(name, imageUrl);
+    handleUpdateUser(name, imageUrl, dob, phoneNumber, address);
   };
-  const handleUpdateUser = (name, photo) => {
-    updateUserProfile({ displayName: name, photoURL: photo })
+  
+  const handleUpdateUser = (name, photo, dob,  phoneNumber, address) => {
+    updateUserProfile({ displayName: name, photoURL: photo }) // only updates name and photo in Firebase
       .then(() => {
-        setProfileImage(photo);
-        setPreviewImage("");
-        setSelectedFile(null);
-        toast.success("Profile Updated Successfully");
-        navigate("/myProfile");
+        const userInfo = {
+          name,
+          photo,
+          email: user?.email,
+          dob,
+          phoneNumber,
+          address,
+        };
+  
+        axiosSecure.put(`/users/${user?.email}`, userInfo)
+          .then((res) => {
+            toast.success("Profile Updated Successfully");
+          })
+          .catch((err) => {
+            console.error("Database update error:", err);
+            toast.error("Failed to save extra profile info");
+          });
       })
       .catch((error) => {
-        console.error("Update profile error:", error);
-        toast.error("Failed to update profile");
+        console.error("Firebase update error:", error);
+        toast.error("Failed to update Firebase profile");
       });
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f0f4f8] to-[#d4eaf7] py-10">
       <div className="w-full max-w-xl bg-white bg-opacity-70 backdrop-blur-md rounded-2xl shadow-2xl p-10">
@@ -107,6 +123,7 @@ const MyProfile = () => {
           ref={fileInputRef}
           onChange={handleImageChange}
           className="hidden"
+          name="photo"
         />
 
         {/* Form */}
@@ -117,6 +134,7 @@ const MyProfile = () => {
             name="email"
             defaultValue={user?.email}
             readOnly
+        
             className="w-full px-4 py-3 border border-gray-300 bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
           />
 
@@ -129,7 +147,29 @@ const MyProfile = () => {
             required
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
+<input
+  type="date"
+  name="dob"
+  defaultValue={user?.dob || ""}
+  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+/>
 
+{/* phoneNumber Number */}
+<input
+  type="tel"
+  name="phoneNumber"
+  defaultValue={user?.phoneNumber || ""}
+  placeholder="Enter your phoneNumber number"
+  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+/>
+
+{/* Address */}
+<textarea
+  name="address"
+  defaultValue={user?.address || ""}
+  placeholder="Enter your address"
+  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+/>
           {/* Submit */}
           <button
             type="submit"
