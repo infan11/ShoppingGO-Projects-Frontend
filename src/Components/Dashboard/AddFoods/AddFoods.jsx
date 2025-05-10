@@ -58,6 +58,7 @@
           foodImage: imageData?.data?.display_url || "",
           category: data.category,
           price: parseFloat(data.price),
+       
         };
 
         // Send data to the backend

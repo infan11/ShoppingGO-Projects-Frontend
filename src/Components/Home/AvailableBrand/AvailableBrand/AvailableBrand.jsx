@@ -52,10 +52,10 @@ const AvailableBrand = () => {
       <div className=" relative w-full min-h-[400px]  flex flex-col items-center justify-center overflow-hidden">
 
         {/* Beautiful Banner Text */}
-        <div className="text-center mb-6 z-10">
+        {/* <div className="text-center mb-6 z-10">
           <h2 className="text-4xl font-extrabold text-[#339179] mb-2 drop-shadow-lg">Find Your Favorite Brand</h2>
           <p className="text-gray-600 text-lg"> Just for you <span className="font-extrabold font-Caveat text-2xl text-[#339179]">{user?.displayName}</span></p>
-        </div>
+        </div> */}
 
         {/* Scrolling Items */}
         <div className="w-full ">
@@ -95,7 +95,7 @@ const AvailableBrand = () => {
         </div>
 
         {/* Decorative Light Background */}
-        <div className="absolute inset-0 bg-[#339179] bg-cover bg-center opacity-10"></div>
+        {/* <div className="absolute inset-0 bg-[#339179] bg-cover bg-center opacity-10"></div> */}
 
       </div>
     </div>
