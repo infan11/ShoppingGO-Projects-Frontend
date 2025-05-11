@@ -8,8 +8,9 @@ import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Circles } from 'react-loader-spinner';
 import LanguageProvider from './Components/Provider/LanguageProvider/LanguageProvider';
-import store from './Components/Hooks/store';
-import { Provider } from 'react-redux';
+import store from '././Redux/store';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { setLoading } from './Redux/Features/LoadingSlice/LoadingSlice';
 
 const queryClient = new QueryClient();
 
@@ -28,14 +29,16 @@ const Loader = () => (
 );
 
 const AppWithLoader = () => {
-  const [loading, setLoading] = useState(true);
-
+const dispatch  = useDispatch();
+const isLoading = useSelector((state) => state.loading.isLoading)
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
+    const timer = setTimeout(() => {
+   dispatch(setLoading(false))
+    } ,1500);
     return () => clearTimeout(timer);
   }, []);
 
-  return loading ? <Loader /> : <RouterProvider router={router} />;
+  return isLoading ? <Loader /> : <RouterProvider router={router} />;
 };
 
 createRoot(document.getElementById('root')).render(

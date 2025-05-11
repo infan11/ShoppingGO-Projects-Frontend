@@ -34,7 +34,6 @@ import PaymentPage from "../../Dashboard/PaymentPage/PaymentPage";
 import AddDistrictCollection from "../../Dashboard/AddDistrictCollection/AddDistrictCollection";
 
 import DistrictRes from "../../Home/DistrictAvailable/DistrictRes/DistrictRes";
-import Serach from "../../Navbar/Search/Serach";
 import DetailsShop from "../../Restaurants/DetailsShop/DetailsShop";
 import Categories from "../../Categories/Categories/Categories";
 import Deals from "../../Deals/Deals/Deals";
@@ -46,6 +45,7 @@ import LG from "../../Home/Home/LG/LG";
 import Xiaomi from "../../Home/Xiaomi/Xiaomi";
 import Hp from "../../Home/Hp/Hp";
 import Addidas from "../../Home/Addidas/Addidas";
+import RestaurantUploadPage from "../../Navbar/RestaurantUploadPage/RestaurantUploadPage";
 
 
 export const router = createBrowserRouter([
@@ -146,8 +146,8 @@ export const router = createBrowserRouter([
 
       // other Service components
       {
-        path: "/search",
-        element: <Serach />
+        path: "/restaurantUpload/:restaurantName",
+        element:  <RestaurantUploadPage/>
       }
     ],
   },

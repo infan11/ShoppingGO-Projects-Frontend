@@ -30,6 +30,7 @@ import useAuth from "../Hooks/useAuth";
 import useAddFood from "../Hooks/useAddFood";
 import useLanguage from "../Hooks/useLanguage";
 import useRestaurantData from "../Hooks/useRestaurantData";
+import SearchBar from "./SearchBar/SearchBar";
 
 const Navbar = () => {
 
@@ -45,6 +46,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [placeholder, setPlaceholder] = useState("Search in Shop");
   const wrapperRef = useRef(null);
+
 
   // Typewriter placeholder texts
   const phrases = [
@@ -210,6 +212,14 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     }
   }, [])
+  const handleSearchSelect = (item) => {
+    // Navigate to appropriate page based on search result type
+    if (item.type === "restaurantUpload") {
+      navigate(`/restaurantUpload/${item.restaurantName}?food=${item.foodName}`);
+    } else if (item.type === "restaurantUpload") {
+      navigate(`/restaurantUpload/${item.restaurantName}`);
+    }
+  };
 
   return (
     <div>
@@ -222,45 +232,13 @@ const Navbar = () => {
       <a href="/" className=" w-[100px]  lg:w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
    
         </div>
-      <div className="navbar-center">
-      <div ref={wrapperRef} className="relative p-1 lg:p-3 w-[200px] lg:w-[600px]">
-      <div className="relative">
-        <input
-          type="text"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onFocus={() => setIsOpen(true)}
-          placeholder={placeholder}
-          className="input input-bordered w-full pr-10 rounded-full focus:outline-none focus:ring-2 focus:ring-[#339179] transition duration-300"
-        />
-        <button className="absolute right-3 top-1/2 -translate-y-1/2 text-[#339179] animate-pulse">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-          </svg>
-        </button>
-      </div>
-
-      {isOpen && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 mt-1 rounded-md shadow z-50 max-h-60 overflow-y-auto">
-          <ul>
-            {suggestions.map((item, index) => (
-              <li
-                key={index}
-                className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                onClick={() => {
-                  setSearchText(item.label);
-                  setIsOpen(false);
-                }}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+      <div className="navbar-center ">
+      <SearchBar
+      className=""
+            restaurantData={restaurantData} 
+            onSearchSelect={handleSearchSelect}
+          
+          />
       </div>
         <div className="navbar-end gap-2 ">
       
