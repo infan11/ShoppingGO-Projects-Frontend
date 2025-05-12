@@ -229,7 +229,7 @@ const Navbar = () => {
       
         <div className="navbar-start">
       
-      <a href="/" className=" w-[100px]  lg:w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
+      <a href="/" className=" w-[97px]  lg:w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
    
         </div>
       <div className="navbar-center ">

@@ -112,13 +112,13 @@ const SearchBar = ({ restaurantData, onSearchSelect }) => {
   };
 
   return (
-    <div className="searchbar-wrapper w-full max-w-3xl mx-auto z-50">
+    <div className=" w-[200px] lg:w-[900px] mx-auto z-50">
       <div className="relative" ref={wrapperRef}>
-        <div className="flex items-stretch border border-gray-300 rounded-md overflow-hidden shadow-sm bg-white">
+        <div className="flex items-stretch border  border-gray-300 rounded-full  overflow-hidden drop-shadow-2xl shadow-inherit  bg-white">
           {/* Category Dropdown (static "All") */}
-          <div className="bg-gray-100 px-4 flex items-center text-sm font-medium border-r border-gray-300">
-            All
-          </div>
+          {/* <div className="bg-gray-100 px-4 flex items-center text-sm font-medium border-r border-gray-300">
+           All
+          </div> */}
 
           {/* Search Input */}
           <input
@@ -127,12 +127,12 @@ const SearchBar = ({ restaurantData, onSearchSelect }) => {
             onChange={(e) => setSearchText(e.target.value)}
             onFocus={() => setIsOpen(true)}
             placeholder={placeholder}
-            className="flex-1 px-4 py-2 focus:outline-none text-sm"
+            className="flex-1 px-4  py-2 bg-white w-full focus:outline-none text-sm"
           />
 
           {/* Search Button */}
-          <button className="bg-[#febd69] px-4 flex items-center justify-center">
-            <IoSearchSharp className="h-5 w-5 text-black" />
+          <button className="bg-[#fff] text-[#339179] px-2 flex items-center justify-center">
+            <IoSearchSharp className="h-5 w-5 animate-pulse text-[#339179]" />
           </button>
         </div>
 
@@ -146,20 +146,20 @@ const SearchBar = ({ restaurantData, onSearchSelect }) => {
                   onClick={() => handleSuggestionClick(item)}
                   className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100 transition"
                 >
-                  {item.image ? (
+                  {/* {item.image ? (
                     <img
-                      src={item.image}
-                      alt={item.label}
+
+                    
                       className="w-10 h-10 object-cover rounded"
                     />
                   ) : (
                     <span className="w-10 h-10 flex items-center justify-center bg-gray-200 rounded text-sm text-gray-600">
-                      {item.type === "restaurant" ? "🏬" : "🍽️"}
+                      {item.type === "restaurant"}
                     </span>
-                  )}
-                  <div className="flex-1">
-                    <p className="font-medium">{item.label}</p>
-                    <span className="text-xs text-gray-500 capitalize">{item.type}</span>
+                  )} */}
+                  <div className=" ">
+                    <p className="font-medium gap-2">{item.label}  </p>
+                   
                   </div>
                 </li>
               ))}

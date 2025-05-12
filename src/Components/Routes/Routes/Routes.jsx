@@ -140,7 +140,7 @@ export const router = createBrowserRouter([
       // user info Components
       {
         path: "/myProfile",
-        element: <MyProfile />
+        element:<PrivateRoutes><MyProfile/></PrivateRoutes>
       },
 
 
