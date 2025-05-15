@@ -225,11 +225,11 @@ const Navbar = () => {
     <div>
 
       {/* First Navbar */}
-      <div className={`navbar  px-2 md:px-6 lg:px-8 bg-[#339179] ${scrolled ? "fixed top-0 left-0 w-full  shadow z-10 " : ""}`}>
+      <div className={`navbar  px-4 md:px-6 lg:px-10 bg-[#339179] ${scrolled ? "fixed top-0 left-0 w-full  shadow z-10 " : ""}`}>
       
         <div className="navbar-start">
       
-      <a href="/" className=" w-[97px]  lg:w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
+      <a href="/" className=" w-[90px]  lg:w-[150px]   rounded-full "><img src="https://i.ibb.co.com/DSyrSGk/logo.png" alt="" /></a>
    
         </div>
       <div className="navbar-center ">
@@ -273,13 +273,13 @@ const Navbar = () => {
                     variant="circular"
                     alt="tania andrew"
 
-                    className="cursor-pointer w-9 h-9 rounded-full"
+                    className="cursor-pointer w-12 h-12 rounded-full border-4 border-[#8aaa]"
                     src={user?.photoURL || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
                   />
                 </MenuHandler>
                 <MenuList>
                   <Link to={"/myProfile"}>
-                    <MenuItem className="flex items-center gap-2">
+                    <MenuItem className="flex items-center gap-2 ">
                       <svg
                         width="16"
                         height="16"

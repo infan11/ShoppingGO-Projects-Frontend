@@ -149,7 +149,7 @@ const SearchBar = ({ restaurantData, onSearchSelect }) => {
   };
 
   return (
-    <div className="w-[250px] sm:w-[400px] lg:w-[900px] mx-auto z-50">
+    <div className="w-[200px] sm:w-[400px] lg:w-[900px] mx-auto z-50">
       <div className="relative" ref={wrapperRef}>
         <div className="flex items-center border border-gray-300 rounded-full overflow-hidden shadow-lg bg-white">
           <input
