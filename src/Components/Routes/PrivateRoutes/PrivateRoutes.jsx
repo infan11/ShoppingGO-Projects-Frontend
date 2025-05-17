@@ -3,9 +3,9 @@ import useAuth from "../../Hooks/useAuth";
 import { Circles } from "react-loader-spinner";
 
 const PrivateRoutes = ({ children }) => {
-    const { user, loading } = useAuth();
+const { user, loading} = useAuth();
     const location = useLocation();
-
+    
     if (loading) {
         return (
             <div className="min-h-screen flex justify-center items-center">

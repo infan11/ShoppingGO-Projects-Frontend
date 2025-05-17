@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUsers } from "../../../../Redux/Features/usersSlice/usersSlice";
 
 const Register = () => {
     const { createUser, googleAuth, updateUserProfile } = useAuth();
@@ -20,10 +22,11 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const from = location.state?.from?.pathname || "/";
     const axiosSecure = useAxiosSecure();
-
+   const disPatch = useDispatch();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (data) => {
+        disPatch(addUsers(data))
         try {
             console.log("Form Data:", data);
 

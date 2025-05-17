@@ -1,266 +1,128 @@
-import React from "react";
-import {
-  Button,
-  Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
-} from "@material-tailwind/react";
-import { PiHamburgerThin } from "react-icons/pi";
+import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { LuUserSearch } from "react-icons/lu";
+import {
+  RiAdminLine,
+  RiShoppingBag4Line,
+  RiHome9Line,
+} from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
-import { RxUpdate } from "react-icons/rx";
-import { RiAdminLine, RiShoppingBag4Line, RiHome9Line } from "react-icons/ri";
+import { LuUserSearch } from "react-icons/lu";
 import { MdOutlineAddModerator } from "react-icons/md";
 import { PiContactlessPaymentLight } from "react-icons/pi";
-import Darkmode from "../../Darkmode/Darkmode";
+import { IoMdLogIn } from "react-icons/io";
+import { HiLogout } from "react-icons/hi";
 import useAuth from "../../Hooks/useAuth";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
 import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
-import { IoIosAddCircleOutline, IoMdLogIn } from "react-icons/io";
-import { HiLogout } from "react-icons/hi";
+import { IoSparklesSharp } from "react-icons/io5";
+// import Darkmode from "../../Darkmode/Darkmode";
 
 const Dashboard = () => {
-  const { user , logout } = useAuth();
+  const { user, logout } = useAuth();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
   const [isOwner] = useRestaurantOwner();
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
+
+  const noNavbarFooter = ["/dashboard/paymentSuccess"].includes(location.pathname);
+  const toggleSidebar = () => setCollapsed(!collapsed);
+
+  const menuItemClass =
+    "flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-green-900 hover:text-white transition-all";
 
   const handleLogout = () => {
     logout().then(() => {});
-  }
+  };
 
-  const location = useLocation();
-  const noNavbarFooter = ["/dashboard/paymentSuccess"].includes(location.pathname);
-
-  const menuItemClass = "hover:bg-gradient-to-r hover:from-green-white  hover:to-green-600 hover:scale-110  transition-all duration-300 ease-in-out rounded-full hover:text-[#339179]";
+  const roleMenus = () => {
+    if (isAdmin) {
+      return [
+        { to: "/dashboard/adminHome", icon: <RiAdminLine />, label: "Admin Home" },
+        { to: "/dashboard/users", icon: <LuUserSearch />, label: "All Users" },
+        { to: "/dashboard/myOrder", icon: <RiShoppingBag4Line />, label: "My Order" },
+        { to: "/dashboard/uploadInfo", icon: <FaRegUser />, label: "Upload Info" },
+        { to: "/dashboard/addDistrictCollection", icon: <FaRegUser />, label: "Add District Collection" },
+        { to: "/dashboard/paymentHistory", icon: <PiContactlessPaymentLight />, label: "Payment History" },
+        { to: "/dashboard/userHome", icon: <FaRegUser />, label: "User Home" },
+      ];
+    } else if (isModerator) {
+      return [
+        { to: "/dashboard/moderator", icon: <MdOutlineAddModerator />, label: "Moderator Home" },
+        { to: "/dashboard/ownerHome", icon: <FaRegUser />, label: "Owner Home" },
+        { to: "/dashboard/uploadInfo", icon: <FaRegUser />, label: "Upload Info" },
+        { to: "/dashboard/myOrder", icon: <RiShoppingBag4Line />, label: "My Order" },
+        { to: "/dashboard/paymentHistory", icon: <PiContactlessPaymentLight />, label: "Payment History" },
+        { to: "/dashboard/userHome", icon: <FaRegUser />, label: "User Home" },
+      ];
+    } else if (isOwner) {
+      return [
+        { to: "/dashboard/ownerHome", icon: <FaRegUser />, label: "Owner Home" },
+        { to: "/dashboard/uploadInfo", icon: <FaRegUser />, label: "Upload Info" },
+        { to: "/dashboard/myOrder", icon: <RiShoppingBag4Line />, label: "My Order" },
+        { to: "/dashboard/paymentHistory", icon: <PiContactlessPaymentLight />, label: "Payment History" },
+      ];
+    } else {
+      return [
+        { to: "/dashboard/userHome", icon: <FaRegUser />, label: "User Home" },
+        { to: "/dashboard/myOrder", icon: <RiShoppingBag4Line />, label: "My Order" },
+        { to: "/dashboard/paymentHistory", icon: <PiContactlessPaymentLight />, label: "Payment History" },
+      ];
+    }
+  };
 
   return (
-    <div className="min-h-screen">
-      {/* Navbar */}
-      {noNavbarFooter || (
-        <div className="navbar bg-white shadow-2xl">
-          <div className="flex-none ">
-            <label
-              htmlFor="my-drawer-4"
-              className="text-4xl font-bold cursor-pointer "
-            >
-              <a className="text-[#339179]"><PiHamburgerThin /></a>
-            </label>
-          </div>
-          <div className="flex-1">
-            <span className="text-xl font-bold text-[#339179]">DASHBOARD</span>
-          </div>
-        </div>
-      )}
-
-      {/* Drawer */}
-      <div className="drawer drawer-end">
-        <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content">
-          {/* Main Content */}
-          <Outlet />
-        </div>
-        <div className="drawer-side">
-          <label htmlFor="my-drawer-4" className="drawer-overlay font-Kanit"></label>
-          <ul className="menu bg-[#339179] text-white min-h-full w-80 p-4">
-            <Typography variant="h5" color="white" className="mb-4">
-              DASHBOARD
-            </Typography>
-
-            {isAdmin && (
-              <>
-                <Link to="/dashboard/adminHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RiAdminLine /></ListItemPrefix>
-                    Admin Home
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/users">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><LuUserSearch /></ListItemPrefix>
-                   All Users
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/myOrder">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RiShoppingBag4Line /></ListItemPrefix>
-                    My Order
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/uploadInfo">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Upload Info
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/addDistrictCollection">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Add District Collection
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/paymentHistory">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><PiContactlessPaymentLight /></ListItemPrefix>
-                    Payment History
-                  </ListItem>
-                </Link>
-              
-                {/* <Link to="/dashboard/moderator">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><MdOutlineAddModerator /></ListItemPrefix>
-                    Moderator Home
-                  </ListItem>
-                </Link> */}
-                {/* <Link to="/dashboard/ownerHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Owner Home
-                  </ListItem>
-                </Link> */}
-                <Link to="/dashboard/userHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    User Home
-                  </ListItem>
-                </Link>
-              </>
-            )}
-
-            {!isAdmin && isModerator && (
-              <>
-                <Link to="/dashboard/moderator">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><MdOutlineAddModerator /></ListItemPrefix>
-                    Moderator Home
-                  </ListItem>
-                </Link>
-                {/* <Link to="/dashboard/updateFood">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RxUpdate /></ListItemPrefix>
-                    Update Food
-                  </ListItem>
-                </Link> */}
-                <Link to="/dashboard/ownerHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Owner Home
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/uploadInfo">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Upload Info
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/userHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    User Home
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/myOrder">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RiShoppingBag4Line /></ListItemPrefix>
-                    My Order
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/paymentHistory">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><PiContactlessPaymentLight /></ListItemPrefix>
-                    Payment History
-                  </ListItem>
-                </Link>
-              </>
-            )}
-
-            {!isAdmin && !isModerator && isOwner && (
-              <>
-                <Link to="/dashboard/ownerHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Owner Home
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/uploadInfo">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    Upload Info
-                  </ListItem>
-                </Link>
-              
-                <Link to="/dashboard/myOrder">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RiShoppingBag4Line /></ListItemPrefix>
-                    My Order
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/paymentHistory">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><PiContactlessPaymentLight /></ListItemPrefix>
-                    Payment History
-                  </ListItem>
-                </Link>
-              </>
-            )}
-
-            {!isAdmin && !isModerator && !isOwner && (
-              <>
-                <Link to="/dashboard/userHome">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><FaRegUser /></ListItemPrefix>
-                    User Home
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/myOrder">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><RiShoppingBag4Line /></ListItemPrefix>
-                    My Order
-                  </ListItem>
-                </Link>
-                <Link to="/dashboard/paymentHistory">
-                  <ListItem className={menuItemClass}>
-                    <ListItemPrefix><PiContactlessPaymentLight /></ListItemPrefix>
-                    Payment History
-                  </ListItem>
-                </Link>
-              </>
-            )}
-
-            <div className="divider"></div>
-            <Link to="/">
-              <ListItem className={menuItemClass}>
-                <ListItemPrefix><RiHome9Line /></ListItemPrefix>
-                Home
-              </ListItem>
+    <div className="flex min-h-screen">
+      {!noNavbarFooter && (
+        <div
+          className={`${
+            collapsed ? "w-20" : "w-64"
+          } bg-[#339179] text-white rounded-r-3xl transition-all duration-300 p-4 flex flex-col`}
+        >
+          <button
+            onClick={toggleSidebar}
+            className="text-white text-xl  text-center mb-4 focus:outline-none"
+          >
+            {collapsed ? <IoSparklesSharp /> : <IoSparklesSharp />}
+          </button>
+       
+          <nav className="flex flex-col gap-2">
+            {roleMenus().map(({ to, icon, label }) => (
+              <Link key={to} to={to} className={menuItemClass}>
+                {icon} {!collapsed && label}
+              </Link>
+            ))}
+            <div className="border-t border-white my-4"></div>
+            <Link to="/" className={menuItemClass}>
+              <RiHome9Line /> {!collapsed && "Home"}
             </Link>
-
-            <Button className="mt-4 bg-[#339179] shadow-2xl w-full" size="sm">
-              <Darkmode />
-            </Button>
-            <br />
-            <div className="mt-20 md:mt-16 lg:mt-14 mx-auto">
+            <div className="mt-auto pt-6">
+              <div className="mb-4">
+                {/* <Darkmode /> */}
+              </div>
               {user ? (
                 <button
-                  className="btn w-[200px] rounded-full bg-white text-[#339179]"
                   onClick={handleLogout}
+                  className="bg-white text-[#339179] w-full py-2 rounded-full flex items-center justify-center gap-2"
                 >
-                  <HiLogout /> Logout
+                  <HiLogout /> {!collapsed && "Logout"}
                 </button>
               ) : (
-                <Link to="/login">
-                  <button className="btn mt-64 w-[200px] rounded-full bg-white text-[#339179]">
-                    <IoMdLogIn /> LOGIN
-                  </button>
+                <Link
+                  to="/login"
+                  className="bg-white text-[#339179] w-full py-2 rounded-full flex items-center justify-center gap-2"
+                >
+                  <IoMdLogIn /> {!collapsed && "Login"}
                 </Link>
               )}
             </div>
-          </ul>
+          </nav>
         </div>
-      </div>
+      )}
+      <main className="flex-1 bg-gray-100 p-4">
+        <Outlet />
+      </main>
     </div>
   );
 };

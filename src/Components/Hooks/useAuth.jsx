@@ -1,9 +1,12 @@
 import { useContext } from "react";
 import { AuthContext } from "../Provider/AuthProvider/AuthProvider";
+import { useSelector } from "react-redux";
 
 const useAuth = () => {
     const auth = useContext(AuthContext)
-    return auth;
+   const loading = useSelector((state) => state.loading.isLoading)
+
+    return {... auth, loading};
 
 };
 

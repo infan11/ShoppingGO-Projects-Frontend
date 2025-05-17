@@ -14,12 +14,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import LoadingReducer from "./Features/LoadingSlice/LoadingSlice";
 import searchReducer from "./Features/serachSlice/serachSlice";
+import  usersReducer from "./Features/usersSlice/usersSlice";
 
 const store = configureStore({
   reducer: {
     // cart: cartReducer,
     loading : LoadingReducer,
     search: searchReducer,
+    users : usersReducer
   },
 });
 
