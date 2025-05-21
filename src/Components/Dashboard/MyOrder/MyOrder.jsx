@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import useAddFood from "../../Hooks/useAddFood";
+import useShoppingCart from "../../Hooks/useShoppingCart";
 import { Link } from "react-router-dom";
 import { MdDeleteOutline } from "react-icons/md";
 import useAuth from "../../Hooks/useAuth";
@@ -10,7 +10,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import toast, { Toaster } from "react-hot-toast";
 
 const MyOrder = () => {
-  const [cartFood, refetch] = useAddFood();
+  const [cartFood, refetch] = useShoppingCart();
   const [quantities, setQuantities] = useState({});
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
@@ -33,7 +33,7 @@ const MyOrder = () => {
     }
 
     axiosSecure
-      .patch(`/addFood/${id}`, { quantity })
+      .patch(`/shoppingCart/${id}`, { quantity })
       .then((res) => {
         if (res.data.modifiedCount > 0) {
           refetch();
@@ -82,7 +82,7 @@ const MyOrder = () => {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          axiosSecure.delete(`/addFood/${id}`).then((res) => {
+          axiosSecure.delete(`/shoppingCart/${id}`).then((res) => {
             if (res.data.deletedCount > 0) {
               refetch();
               Swal.fire("Deleted!", "Item has been removed.", "success");
@@ -142,15 +142,15 @@ const MyOrder = () => {
                       <div className="avatar">
                         <div className="h-10 lg:h-16 w-10 lg:w-16 rounded-md overflow-hidden">
                           <img
-                            src={item.foodImage}
-                            alt={item.foodName}
+                            src={item.productImage}
+                            alt={item.productName}
                             className="object-cover"
                           />
                         </div>
                       </div>
                       <div>
                         <p className="lg:font-bold text-[10px] lg:text-lg text-[#339179]">
-                          {item.foodName}
+                          {item.productName}
                         </p>
                       </div>
                     </div>

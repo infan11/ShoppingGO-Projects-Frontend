@@ -19,10 +19,10 @@ const Profile = () => {
         const imageData= await imageUpload(photo);
      
                 const ownerProfile = {
-                  restaurantName : data.restaurantName,
+                  shopName : data.shopName,
                   restaurantEmail: data.restaurantEmail,
                   restaurantAdddress : data.restaurantAdddress,
-                  restaurantNumber : parseFloat(data.restaurantNumber),
+                  shopMobileNumber : parseFloat(data.shopMobileNumber),
                   photo: imageData?.data?.display_url  || ""
                 };
                 axiosPublic.post("/ownerProfile" , ownerProfile)
@@ -31,7 +31,7 @@ const Profile = () => {
                     if(res.data.insertedId){
                         toast.success("Successfully Created Profile")
                     }
-                    navigate("/dashboard/addFoods")
+                    navigate("/dashboard/addProducts")
                 })
           
     }             
@@ -48,39 +48,39 @@ const Profile = () => {
                                     <div className="mb-1 flex flex-col gap-6">
 
                                         <Input size="lg"
-                                            name="restaurantName"
+                                            name="shopName"
                                             type="text"
-                                            label="Restaurant Name"
-                                            {...register("restaurantName", { required: true })}
+                                            label="Shop Name"
+                                            {...register("shopName", { required: true })}
 
                                         />
-                                        {errors.restaurantName && <span className="text-red-600 text-sm font-bold">This field is required</span>}
+                                        {errors.shopName && <span className="text-red-600 text-sm font-bold">This field is required</span>}
 
                                         <Input
                                             size="lg"
                                             name="restaurantEmail"
                                             type="email"
-                                            label="Restaurant Email"
+                                            label="Shop Email"
                                             {...register("restaurantEmail", { required: true })}
                                         />
                                         {errors.restaurantEmail && <span className="text-red-600 text-sm font-bold">This field is required</span>}
 
                                         <Input
                                             size="lg"
-                                            name="restaurantAddress"
+                                            name="shopAddress"
                                             type="text"
-                                            label="Restaurant Address"
+                                            label="Shop Address"
                                             {...register("restaurantAdddress", { required: true })}
                                         />
                                         {errors.restaurantAdddress && <span className="text-red-600 text-sm font-bold">This field is required</span>}
                                         <Input
                                             size="lg"
-                                            name="restaurantNumber"
+                                            name="shopMobileNumber"
                                             type="number"
-                                            label="Restaurant Number"
-                                            {...register("restaurantNumber", { required: true })}
+                                            label="Shop Number"
+                                            {...register("shopMobileNumber", { required: true })}
                                         />
-                                        {errors.restaurantNumber && <span className="text-red-600 text-sm font-bold">This field is required</span>}
+                                        {errors.shopMobileNumber && <span className="text-red-600 text-sm font-bold">This field is required</span>}
                                       
                                         
                                     </div>

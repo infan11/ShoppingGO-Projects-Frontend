@@ -12,7 +12,7 @@ const UpdateFood = () => {
   const axiosSecure = useAxiosSecure();
   const selectedFood = location.state?.food || {}; // Get selected food data
 
-  const [imagePreview, setImagePreview] = useState(selectedFood.foodImage || "");
+  const [imagePreview, setImagePreview] = useState(selectedFood.productImage || "");
 
   const {
     register,
@@ -24,8 +24,8 @@ const UpdateFood = () => {
   // Pre-fill form fields when component loads
   useEffect(() => {
     if (selectedFood) {
-      setValue("restaurantName", selectedFood.restaurantName);
-      setValue("foodName", selectedFood.foodName);
+      setValue("shopName", selectedFood.shopName);
+      setValue("productName", selectedFood.productName);
       setValue("price", selectedFood.price);
       setValue("category", selectedFood.category);
     }
@@ -41,22 +41,22 @@ const UpdateFood = () => {
 
   // Submit updated food data
   const onSubmit = async (data) => {
-    let imageUrl = selectedFood.foodImage;
+    let imageUrl = selectedFood.productImage;
 
-    if (data.foodImage.length > 0) {
-      const imageData = await imageUpload(data.foodImage[0]);
-      imageUrl = imageData?.data?.display_url || selectedFood.foodImage;
+    if (data.productImage.length > 0) {
+      const imageData = await imageUpload(data.productImage[0]);
+      imageUrl = imageData?.data?.display_url || selectedFood.productImage;
     }
 
     const updatedFood = {
-      restaurantName: data.restaurantName,
-      foodName: data.foodName,
-      foodImage: imageUrl,
+      shopName: data.shopName,
+      productName: data.productName,
+      productImage: imageUrl,
       category: data.category,
       price: parseFloat(data.price),
     };
 
-    axiosSecure.patch(`/restaurantUpload/${selectedFood._id}`, updatedFood).then((res) => {
+    axiosSecure.patch(`/sellerProfile/${selectedFood._id}`, updatedFood).then((res) => {
       if (res.data.modifiedCount > 0) {
         toast.success("Successfully updated food!");
         navigate("/restaurant");
@@ -84,7 +84,7 @@ const UpdateFood = () => {
                     id="fileInput"
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     accept="image/*"
-                    {...register("foodImage")}
+                    {...register("productImage")}
                     onChange={handleImageChange}
                   />
                   <MdCloudUpload size={30} className="text-gray-600" />
@@ -93,24 +93,24 @@ const UpdateFood = () => {
               {imagePreview && <img src={imagePreview} alt="Preview" className="mt-4 w-[150px] h-[150px] rounded-full object-cover" />}
             </div>
 
-            {/* Restaurant Name */}
+            {/* Shop Name */}
             <div>
-              <label className="block text-gray-800 font-semibold mb-2">Restaurant Name</label>
+              <label className="block text-gray-800 font-semibold mb-2">Shop Name</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 border rounded-full text-gray-800"
-                {...register("restaurantName")}
+                {...register("shopName")}
                 readOnly
               />
             </div>
 
-            {/* Food Name */}
+            {/* Product Name */}
             <div>
-              <label className="block text-gray-800 font-semibold mb-2">Food Name</label>
+              <label className="block text-gray-800 font-semibold mb-2">Product Name</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 border rounded-full text-gray-800"
-                {...register("foodName")}
+                {...register("productName")}
               />
             </div>
 

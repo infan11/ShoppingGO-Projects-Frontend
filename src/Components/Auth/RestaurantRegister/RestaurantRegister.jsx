@@ -40,8 +40,8 @@ const RestaurantRegister = () => {
           const usersInfo = {
             name: data.displayName,
             email: data.email,
-            restaurantAddress: data.restaurantAddress,
-            restaurantNumber: parseFloat(data.phoneNumber),
+            shopAddress: data.shopAddress,
+            shopMobileNumber: parseFloat(data.phoneNumber),
             date: new Date()
           };
       
@@ -92,11 +92,11 @@ const RestaurantRegister = () => {
 
                             <div>
                                 <Input
-                                    label="Restaurant Address"
+                                    label="Shop Address"
                                     size="lg"
-                                    {...register("restaurantAddress", { required: true })}
+                                    {...register("shopAddress", { required: true })}
                                 />
-                                {errors.restaurantAddress && <p className="text-sm text-red-500 mt-1">Address is required.</p>}
+                                {errors.shopAddress && <p className="text-sm text-red-500 mt-1">Address is required.</p>}
                             </div>
 
                             <div>

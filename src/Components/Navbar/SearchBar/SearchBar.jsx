@@ -94,10 +94,10 @@ const SearchBar = ({ restaurantData, onSearchSelect }) => {
     const timer = setTimeout(() => {
       const filtered = restaurantData
         .filter((res) =>
-          res.restaurantName.toLowerCase().includes(searchText.toLowerCase())
+          res.shopName.toLowerCase().includes(searchText.toLowerCase())
         )
         .map((res) => ({
-          label: res.restaurantName,
+          label: res.shopName,
           type: "restaurant",
           id: res._id,
           image: res.photo,
@@ -144,7 +144,7 @@ const SearchBar = ({ restaurantData, onSearchSelect }) => {
     document.body.classList.remove("search-blur");
 
     if (item.type === "restaurant") {
-      navigate(`/restaurantUpload/${encodeURIComponent(item.label)}`);
+      navigate(`/sellerProfile/${encodeURIComponent(item.label)}`);
     }
   };
 

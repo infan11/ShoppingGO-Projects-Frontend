@@ -10,7 +10,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 import { RxUpdate } from "react-icons/rx";
 import useAuth from "../../Hooks/useAuth";
-import useAddFood from "../../Hooks/useAddFood";
+import useShoppingCart from "../../Hooks/useShoppingCart";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
 import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
@@ -19,13 +19,13 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 
 const Apple = () => {
-  const { restaurantName } = useParams();
+  const { shopName } = useParams();
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [cartFood, refetch] = useAddFood();
+  const [cartFood, refetch] = useShoppingCart();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
   const [isOwner] = useRestaurantOwner();
@@ -33,11 +33,11 @@ const Apple = () => {
   const [existingItem, setExistingItem] = useState(false);
 
 
-    const PizzaFoods  = isRestaurantData
+    const Pizzaproducts  = isRestaurantData
     ?.flatMap((restaurant) =>
-      restaurant?.foods?.map((food) => ({
+      restaurant?.products?.map((food) => ({
         ...food,
-        restaurantName: restaurant?.restaurantName,
+        shopName: restaurant?.shopName,
       }))
     )
     ?.filter((food) => food?.category === "Pizza") || []; 
@@ -46,7 +46,7 @@ const Apple = () => {
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
-  }, [restaurantName, refetch, refetchTwo]);
+  }, [shopName, refetch, refetchTwo]);
 
   useEffect(() => {
     if (user && user.email && cart.fooName) {
@@ -54,31 +54,31 @@ const Apple = () => {
         .get(`/addItem?email=${user?.email}`)
         .then((res) => {
           const itemInCart = res.data.some(
-            (cartEntry) => cartEntry.foodName === cart.fooName
+            (cartEntry) => cartEntry.productName === cart.fooName
           );
           setExistingItem(itemInCart);
         })
         .catch((error) => console.error("Error checking cart:", error));
     }
-  }, [user, axiosSecure, cart.foodName]);
+  }, [user, axiosSecure, cart.productName]);
 
   // ✅ Handle Food Deletion
  
   // ✅ Handle Add Food to Cart
-  const handleAddFood = (food) => {
+  const handleshoppingCart = (food) => {
     if (user && user.email) {
       const foodInfo = {
         foodId: food._id,
-        foodName: food.foodName,
-        restaurantName: food.restaurantName, // ✅ এখানে রেস্টুরেন্ট নাম সঠিকভাবে আছে
+        productName: food.productName,
+        shopName: food.shopName, // ✅ এখানে রেস্টুরেন্ট নাম সঠিকভাবে আছে
         foodPrice: food.price,
-        foodImage: food.foodImage,
+        productImage: food.productImage,
         email: user.email,
         category: food.category,
       };
 
       axiosSecure
-        .post("/addFood", foodInfo)
+        .post("/shoppingCart", foodInfo)
         .then((res) => {
           if (res.data.insertedId) {
             Swal.fire("Success!", "Food added successfully!", "success");
@@ -112,7 +112,7 @@ const Apple = () => {
     <div className="max-w-7xl mx-auto min-h-screen mb-5">
       <br />
       {/* {isAdmin || isModerator || isOwner ? (
-        <Link to={"/dashboard/addFoods"}>
+        <Link to={"/dashboard/addProducts"}>
           <div className="flex justify-end items-end">
             <button className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3">
               <MdOutlineAddCircleOutline />
@@ -122,21 +122,21 @@ const Apple = () => {
       ) : null} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 px-6 lg:px-4">
-        {PizzaFoods.length > 0 ? (
-          PizzaFoods.map((food, index) => ( // ✅ Fixed `PizzaFoods.foods`
+        {Pizzaproducts.length > 0 ? (
+          Pizzaproducts.map((food, index) => ( // ✅ Fixed `Pizzaproducts.products`
             <motion.div key={index} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lgw-[330px] h-[360px]  lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                 <div className="relative overflow-hidden rounded-md">
-                  <motion.img src={food.foodImage} alt={food.foodName} className="h-full w-full object-cover" whileHover={{ scale: 1.1 }} />
+                  <motion.img src={food.productImage} alt={food.productName} className="h-full w-full object-cover" whileHover={{ scale: 1.1 }} />
                 </div>
                 <div className="p-4">
-                  <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.foodName || "Unavailable"}</p>
+                  <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.productName || "Unavailable"}</p>
                   {/* <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.category || "Unavailable"}</p> */}
                   <div className="flex justify-between items-center">
                    <p className="text-red-500 text-sm">
-                      Delicious {food.foodName} from{" "}
-                      <Link to={`/restaurantUpload/${food.restaurantName}`}>
-                        <span className="font-bold">{food.restaurantName}</span>
+                      Delicious {food.productName} from{" "}
+                      <Link to={`/sellerProfile/${food.shopName}`}>
+                        <span className="font-bold">{food.shopName}</span>
                       </Link>
                       . Price: ${food.price}
                     </p>
@@ -149,7 +149,7 @@ const Apple = () => {
                       </Link>
                     ) : (
                       <motion.button
-                        onClick={() => handleAddFood(food)}
+                        onClick={() => handleshoppingCart(food)}
                         className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}

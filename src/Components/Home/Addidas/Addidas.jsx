@@ -8,31 +8,31 @@ import Swal from "sweetalert2";
 
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import useAuth from "../../Hooks/useAuth";
-import useAddFood from "../../Hooks/useAddFood";
+import useShoppingCart from "../../Hooks/useShoppingCart";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
 import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
 import useRestaurantData from "../../Hooks/useRestaurantData";
 
 const Addidas = () => {
-  const { restaurantName } = useParams();
+  const { shopName } = useParams();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
 
-  const [cartFood, refetch] = useAddFood();
+  const [cartFood, refetch] = useShoppingCart();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
   const [isOwner] = useRestaurantOwner();
   const [isRestaurantData, refetchTwo] = useRestaurantData();
 
-  const biryaniFoods =
+  const biryaniproducts =
     isRestaurantData?.flatMap((restaurant) =>
-      restaurant?.foods?.map((food) => ({
+      restaurant?.products?.map((food) => ({
         ...food,
-        restaurantName: restaurant?.restaurantName,
+        shopName: restaurant?.shopName,
       }))
     )?.filter((food) => food?.category === "Biryani") || [];
 
@@ -41,23 +41,23 @@ const Addidas = () => {
     if (storedCart) {
       dispatch(setCart(JSON.parse(storedCart)));
     }
-  }, [restaurantName, dispatch, refetch, refetchTwo]);
+  }, [shopName, dispatch, refetch, refetchTwo]);
 
-  const handleAddFood = (food) => {
+  const handleshoppingCart = (food) => {
     // dispatch(addToCart(food))
     if (user && user.email) {
       const foodInfo = {
         foodId: food._id,
-        foodName: food.foodName,
-        restaurantName: food.restaurantName,
+        productName: food.productName,
+        shopName: food.shopName,
         foodPrice: food.price,
-        foodImage: food.foodImage,
+        productImage: food.productImage,
         email: user.email,
         category: food.category,
       };
       dispatch(addToCart(foodInfo));
       axiosSecure
-        .post("/addFood", foodInfo)
+        .post("/shoppingCart", foodInfo)
         .then((res) => {
           if (res.data.insertedId) {
             Swal.fire("Success!", "Food added successfully!", "success");
@@ -88,10 +88,10 @@ const Addidas = () => {
   return (
     <div className="max-w-7xl mx-auto min-h-screen mb-5">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 px-6 lg:px-4">
-        {biryaniFoods.length > 0 ? (
-          biryaniFoods.map((food, index) => {
+        {biryaniproducts.length > 0 ? (
+          biryaniproducts.map((food, index) => {
             const isAlreadyInCart = cartItems.some(
-              (item) => item.foodName === food.foodName
+              (item) => item.productName === food.productName
             );
             return (
               <motion.div
@@ -103,21 +103,21 @@ const Addidas = () => {
                 <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lg w-[330px] h-[360px] lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                   <div className="relative overflow-hidden rounded-md">
                     <motion.img
-                      src={food.foodImage}
-                      alt={food.foodName}
+                      src={food.productImage}
+                      alt={food.productName}
                       className="h-full w-full object-cover"
                       whileHover={{ scale: 1.1 }}
                     />
                   </div>
                   <div className="p-4">
                     <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">
-                      {food.foodName || "Unavailable"}
+                      {food.productName || "Unavailable"}
                     </p>
                     <div className="flex justify-between items-center">
                       <p className="text-red-500 text-sm">
-                        Delicious {food.foodName} from{" "}
-                        <Link to={`/restaurantUpload/${food.restaurantName}`}>
-                          <span className="font-bold">{food.restaurantName}</span>
+                        Delicious {food.productName} from{" "}
+                        <Link to={`/sellerProfile/${food.shopName}`}>
+                          <span className="font-bold">{food.shopName}</span>
                         </Link>
                         . Price: ${food.price}
                       </p>
@@ -129,7 +129,7 @@ const Addidas = () => {
                         </Link>
                       ) : (
                         <motion.button
-                          onClick={() => handleAddFood(food)}
+                          onClick={() => handleshoppingCart(food)}
                           className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}

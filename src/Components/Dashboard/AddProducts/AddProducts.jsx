@@ -9,14 +9,14 @@
   import { useNavigate } from "react-router-dom";
   import useRestaurantData from "../../Hooks/useRestaurantData";
 
-  const AddFoods = () => {
+  const AddProducts = () => {
     const { user } = useAuth();
     const {
       register,  handleSubmit, formState: { errors },
   setValue,
     } = useForm({
       defaultValues: {
-        restaurantName: user?.displayName || " Restaurant Name",
+        shopName: user?.displayName || " Shop Name",
       },
     });
   const navigate = useNavigate();
@@ -46,23 +46,23 @@
 
     const onSubmit = async (data) => {
       setImageError("");
-      const foodImage = data.foodImage?.[0];
+      const productImage = data.productImage?.[0];
 
       try {
-        await validateImage(foodImage);
+        await validateImage(productImage);
 
-        const imageData = await imageUpload(foodImage);
+        const imageData = await imageUpload(productImage);
         const foodInfo = {
-          restaurantName: data.restaurantName,
-          foodName: data.foodName,
-          foodImage: imageData?.data?.display_url || "",
+          shopName: data.shopName,
+          productName: data.productName,
+          productImage: imageData?.data?.display_url || "",
           category: data.category,
           price: parseFloat(data.price),
        
         };
 
         // Send data to the backend
-        axiosSecure.patch(`/restaurantUpload/${data.restaurantName}`, foodInfo)
+        axiosSecure.patch(`/sellerProfile/${data.shopName}`, foodInfo)
         .then((res) => {
           console.log(res.data);
           if (res.data.modifiedCount > 0) {
@@ -74,7 +74,7 @@
       } catch (error) {
         setImageError(error.message || "An error occurred");
       }
-      navigate(`/restaurantUpload/${data.restaurantName}`);
+      navigate(`/sellerProfile/${data.shopName}`);
     };
       
       
@@ -88,7 +88,7 @@
 
     return (
       <div className="min-h-screen py-8 bg-gray-50">
-        <h2 className="text-3xl font-bold text-center text-[#339179] mb-8">Add Your Food</h2>
+        <h2 className="text-3xl font-bold text-center text-[#339179] mb-8">Add Your Product</h2>
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
@@ -100,9 +100,9 @@
                       type="file"
                       id="fileInput"
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      name="foodImage"
+                      name="productImage"
                       accept="image/*"
-                      {...register("foodImage", { required: true })}
+                      {...register("productImage", { required: true })}
                       onChange={handleImageChange}
                     />
                     <label
@@ -114,7 +114,7 @@
                     </label>
                   </div>
                 </div>
-                {errors.foodImage && (
+                {errors.productImage && (
                   <span className="text-[#339179] text-sm text-center">
                     This field is required
                   </span>
@@ -135,37 +135,37 @@
                 )}
               </div>
 
-              {/* Restaurant Name */}
+              {/* Shop Name */}
               <div>
                 <label className="block text-gray-600 font-semibold mb-2">
-                  Restaurant Name
+                  Shop Name
                 </label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-full focus:ring-2 text-[#339179] focus:ring-red-400 outline-none transition"
-                  placeholder="Enter restaurant name"
-                  {...register("restaurantName", { required: true, minLength: 1, maxLength: 20 })}
+                  placeholder="Enter Shop Name"
+                  {...register("shopName", { required: true, minLength: 1, maxLength: 20 })}
                   readOnly
                 />
-                {errors.restaurantName && (
+                {errors.shopName && (
                   <span className="text-[#339179] text-sm">
                     This field is required
                   </span>
                 )}
               </div>
 
-              {/* Food Name */}
+              {/* Product Name */}
               <div>
                 <label className="block text-gray-600 font-semibold mb-2">
-                  Food Name
+                  Product Name
                 </label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border rounded-full focus:ring-2 text-[#339179] focus:ring-red-400 outline-none transition"
-                  placeholder="Enter food name"
-                  {...register("foodName", { required: true, minLength: 4, maxLength: 20 })}
+                  placeholder="Enter Product Name"
+                  {...register("productName", { required: true, minLength: 4, maxLength: 20 })}
                 />
-                {errors.foodName && (
+                {errors.productName && (
                   <span className="text-[#339179] text-sm">
                     This field is required
                   </span>
@@ -233,4 +233,4 @@
     );
   };
 
-  export default AddFoods;
+  export default AddProducts;

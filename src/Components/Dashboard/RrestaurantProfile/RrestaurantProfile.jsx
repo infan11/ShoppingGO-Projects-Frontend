@@ -115,7 +115,7 @@ const RestaurantProfile = () => {
                     <tbody>
                         {filteredUsers.length > 0 ? (
                             filteredUsers.map(({ _id, name, email,
-                                restaurantNumber, photo,
+                                shopMobileNumber, photo,
                                 restaurantAdddress, role, avatar }) => (
                                 <tr key={_id} className="">
                                     <td className="px-4 py-2 border flex items-center space-x-4">
@@ -128,7 +128,7 @@ const RestaurantProfile = () => {
                                             <p className="text-sm text-gray-500">{email}</p>
                                             <p className="text-sm text-gray-500">
                                                 {restaurantAdddress}</p>
-                                            <p className="text-sm text-gray-500">{restaurantNumber}</p>
+                                            <p className="text-sm text-gray-500">{shopMobileNumber}</p>
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border">

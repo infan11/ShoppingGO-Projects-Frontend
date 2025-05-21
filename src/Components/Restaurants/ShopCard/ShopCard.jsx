@@ -44,7 +44,7 @@ const ShopCard = () => {
       }).then((result) => {
         if (result.isConfirmed) {
           axiosSecure
-            .delete(`/restaurantUpload/${food}`)
+            .delete(`/sellerProfile/${food}`)
             .then((res) => {
               if (res.data.deletedCount > 0) {
                 toast.success("Successfully Deleted");
@@ -94,18 +94,18 @@ const ShopCard = () => {
 
               <CardBody className="text-center p-6">
                 <Typography className="text-[18px] font-bold font-Caveat text-gray-900">
-                  {restaurant?.restaurantName}
+                  {restaurant?.shopName}
                 </Typography>
                 <Typography className="mb-2 font-Kanit">
-                  {restaurant?.restaurantAddress}
+                  {restaurant?.shopAddress}
                 </Typography>
 
                 <div className="mt-4 flex justify-center">
-                  <Link to={`/restaurantUpload/${restaurant.restaurantName}`}>
+                  <Link to={`/sellerProfile/${restaurant.shopName}`}>
                     <Avatar
                       size="xl"
                       variant="circular"
-                      alt={restaurant?.restaurantName}
+                      alt={restaurant?.shopName}
                       className="border-2 border-gray-300 shadow-lg transition-transform duration-300 hover:scale-110"
                       src={restaurant?.photo}
                     />
@@ -114,7 +114,7 @@ const ShopCard = () => {
 
                 {(isAdmin || isModerator) && (
                   <motion.button
-                    onClick={() => handleDeleted(restaurant.restaurantName)}
+                    onClick={() => handleDeleted(restaurant.shopName)}
                     className="absolute top-4 right-4 bg-red-600 text-white p-3 rounded-full shadow-md hover:bg-red-700 transition-all"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}

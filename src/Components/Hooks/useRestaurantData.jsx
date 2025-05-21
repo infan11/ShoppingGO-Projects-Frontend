@@ -7,7 +7,7 @@ const useRestaurantData = () => {
     const { data: isRestaurantData = [] , refetch : refetchTwo , isLoading} = useQuery({
         queryKey : ["isRestaurantData"],
         queryFn : async () => {
-            const res = await axiosSecure.get("/restaurantUpload")
+            const res = await axiosSecure.get("/sellerProfile")
             return res.data;
         }
     })

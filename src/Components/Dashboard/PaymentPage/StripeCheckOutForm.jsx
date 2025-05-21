@@ -4,7 +4,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { FaCcStripe } from 'react-icons/fa';
 import { CardElement, useStripe } from '@stripe/react-stripe-js';
 import toast from 'react-hot-toast';
-import useAddFood from '../../Hooks/useAddFood';
+import useShoppingCart from '../../Hooks/useShoppingCart';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 import { useElements } from '@stripe/react-stripe-js';
 import useAuth from '../../Hooks/useAuth';
@@ -19,7 +19,7 @@ const StripeCheckOutForm = () => {
    const {user} = useAuth();
 const elements = useElements();
 
-    const [cartFood] = useAddFood();
+    const [cartFood] = useShoppingCart();
     const [quantities, setQuantities] = useState({});
     const navigate = useNavigate();
     const handleOpen = () => setOpen(!open);

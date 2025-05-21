@@ -1,21 +1,21 @@
-// pages/RestaurantUploadPage.jsx
+// pages/sellerProfilePage.jsx
 import React from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 
-const RestaurantUploadPage = () => {
-  const { restaurantName } = useParams();
+const SellerProfilePage = () => {
+  const { shopName } = useParams();
   const [searchParams] = useSearchParams();
-  const foodName = searchParams.get('food');
+  const productName = searchParams.get('food');
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">
-        Restaurant: {decodeURIComponent(restaurantName)}
+        Restaurant: {decodeURIComponent(shopName)}
       </h1>
       
-      {foodName && (
+      {productName && (
         <p className="text-lg">
-          Food Item: {decodeURIComponent(foodName)}
+          Food Item: {decodeURIComponent(productName)}
         </p>
       )}
 
@@ -28,4 +28,4 @@ const RestaurantUploadPage = () => {
   );
 };
 
-export default RestaurantUploadPage;
+export default SellerProfilePage;

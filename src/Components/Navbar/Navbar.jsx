@@ -27,7 +27,7 @@ import useRestaurantOwner from "../Hooks/useRestaurantOwner";
 import { HiOutlineMenu } from "react-icons/hi";
 import useAuth from "../Hooks/useAuth";
 
-import useAddFood from "../Hooks/useAddFood";
+import useShoppingCart from "../Hooks/useShoppingCart";
 import useLanguage from "../Hooks/useLanguage";
 import useRestaurantData from "../Hooks/useRestaurantData";
 import SearchBar from "./SearchBar/SearchBar";
@@ -38,7 +38,7 @@ const Navbar = () => {
     const [isAdmin] = useAdmin();
     const [isModerator] = useModerator();
     const [isOwner] = useRestaurantOwner();
-    const [cartFood] = useAddFood()
+    const [cartFood] = useShoppingCart()
  
     const [restaurantData] = useRestaurantData();
     const [searchText, setSearchText] = useState("");
@@ -95,13 +95,13 @@ const Navbar = () => {
     const filtered = [];
 
     restaurantData.forEach((res) => {
-      if (res.restaurantName.toLowerCase().includes(searchText.toLowerCase())) {
-        filtered.push({ label: res.restaurantName });
+      if (res.shopName.toLowerCase().includes(searchText.toLowerCase())) {
+        filtered.push({ label: res.shopName });
       }
 
-      res.foods?.forEach((food) => {
-        if (food.foodName.toLowerCase().includes(searchText.toLowerCase())) {
-          filtered.push({ label: food.foodName });
+      res.products?.forEach((food) => {
+        if (food.productName.toLowerCase().includes(searchText.toLowerCase())) {
+          filtered.push({ label: food.productName });
         }
       });
     });
@@ -214,10 +214,10 @@ const Navbar = () => {
   }, [])
   const handleSearchSelect = (item) => {
     // Navigate to appropriate page based on search result type
-    if (item.type === "restaurantUpload") {
-      navigate(`/restaurantUpload/${item.restaurantName}?food=${item.foodName}`);
-    } else if (item.type === "restaurantUpload") {
-      navigate(`/restaurantUpload/${item.restaurantName}`);
+    if (item.type === "sellerProfile") {
+      navigate(`/sellerProfile/${item.shopName}?food=${item.productName}`);
+    } else if (item.type === "sellerProfile") {
+      navigate(`/sellerProfile/${item.shopName}`);
     }
   };
 

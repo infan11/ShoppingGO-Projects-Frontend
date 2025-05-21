@@ -49,7 +49,7 @@ createRoot(document.getElementById('root')).render(
     
     <Toaster />
     <QueryClientProvider client={queryClient}>
-      <div className="font-Kanit bg-white text-black">
+      <div className="font-Kanit bg-gradient-to-br from-[#d4f1f4] text-black">
         <AppWithLoader />
       </div>
     </QueryClientProvider>

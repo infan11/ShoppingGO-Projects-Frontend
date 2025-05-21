@@ -9,7 +9,7 @@ import About from "../../About/About/About";
 import Login from "../../Auth/Login/Login";
 import Register from "../../Auth/Register/Register/Register";
 import ResetPassword from "../../Auth/ResetPassword/ResetPassword";
-import AddFoods from "../../Dashboard/AddFoods/AddFoods";
+
 import Profile from "../../Dashboard/Profle/Profile";
 import RestaurantRegister from "../../Auth/RestaurantRegister/RestaurantRegister";
 import RrestaurantProfile from "../../Dashboard/RrestaurantProfile/RrestaurantProfile";
@@ -45,7 +45,8 @@ import LG from "../../Home/Home/LG/LG";
 import Xiaomi from "../../Home/Xiaomi/Xiaomi";
 import Hp from "../../Home/Hp/Hp";
 import Addidas from "../../Home/Addidas/Addidas";
-import RestaurantUploadPage from "../../Navbar/RestaurantUploadPage/RestaurantUploadPage";
+import SellerProfilePage from "../../Navbar/SellerProfilePage/SellerProfile";
+import AddProducts from "../../Dashboard/AddProducts/AddProducts";
 
 
 export const router = createBrowserRouter([
@@ -98,11 +99,11 @@ export const router = createBrowserRouter([
         element: <Restaurants />,
       },
       {
-        path: '/restaurantUpload/:restaurantName',
+        path: '/sellerProfile/:shopName',
         element: <DetailsShop />
       },
       {
-        path: '/restaurantUpload/district/:districtName',
+        path: '/sellerProfile/district/:districtName',
         element: <DistrictRes />
       },
       // Categorise Components
@@ -146,8 +147,8 @@ export const router = createBrowserRouter([
 
       // other Service components
       {
-        path: "/restaurantUpload/:restaurantName",
-        element:  <RestaurantUploadPage/>
+        path: "/sellerProfile/:shopName",
+        element:  <SellerProfilePage/>
       }
     ],
   },
@@ -155,10 +156,11 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+
     children: [
       {
-        path: "/dashboard/addFoods",
-        element: <PrivateRoutes><AddFoods /></PrivateRoutes>,
+        path: "/dashboard/addProducts",
+        element: <PrivateRoutes><AddProducts/></PrivateRoutes>,
       },
       {
         path: "/dashboard/RrestaurantProfile",
@@ -189,7 +191,7 @@ export const router = createBrowserRouter([
         element: <PrivateRoutes><MyOrder /></PrivateRoutes>,
       },
       {
-        path: "/dashboard/updateFood/restaurantName/:foods",
+        path: "/dashboard/updateFood/shopName/:products",
         element: <PrivateRoutes><UpdateFood /></PrivateRoutes>,
       },
       {

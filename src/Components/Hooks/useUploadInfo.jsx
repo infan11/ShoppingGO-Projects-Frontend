@@ -7,7 +7,7 @@ const useUploadInfo = () => {
     const { data : restaurantInfo = [] } = useQuery({
         queryKey: ["restaurantInfo"],
         queryFn: async() => {
-            const res = await axiosSecure.get("/restaurantUpload")
+            const res = await axiosSecure.get("/sellerProfile")
             console.log(res.data);
             return res.data
         }

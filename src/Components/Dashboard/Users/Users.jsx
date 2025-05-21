@@ -7,8 +7,9 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { Input } from "@material-tailwind/react";
-import { useMotionValue, useSpring } from "framer-motion";
+import { useMotionValue, useSpring, motion, AnimatePresence } from "framer-motion";
 
+// CountUp animation for user count
 const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }) => {
   const ref = useRef(null);
   const motionValue = useMotionValue(from);
@@ -39,8 +40,21 @@ const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }
   return <span className={className} ref={ref} />;
 };
 
+// Skeleton loader for users
+const UserSkeleton = () => {
+  return (
+    <div className="flex items-center gap-4 p-4 border rounded-lg animate-pulse bg-white">
+      <div className="w-10 h-10 bg-gray-300 rounded-full" />
+      <div className="flex-1 space-y-2">
+        <div className="h-4 bg-gray-300 rounded w-3/4" />
+        <div className="h-3 bg-gray-200 rounded w-1/2" />
+      </div>
+    </div>
+  );
+};
+
 const Users = () => {
-  const [users, , refetch] = useAllUserHooks();
+  const [users, isLoading, refetch] = useAllUserHooks(); // make sure your hook returns isLoading
   const [searchInput, setSearchInput] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const axiosSecure = useAxiosSecure();
@@ -109,7 +123,7 @@ const Users = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className=" px-1">
       <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <h2 className="text-2xl font-bold text-[#339179] flex items-center gap-2">
           Manage Users
@@ -122,16 +136,16 @@ const Users = () => {
           />
         </h2>
 
-        <div className="w-full md:w-64">
+        <div className="w-full md:w-60">
           <div className="relative">
             <MagnifyingGlassIcon className="absolute h-4 w-4 text-[#339179] top-3 left-4" />
             <Input
               type="text"
               className="pl-10 text-[#339179] font-semibold"
               placeholder="Search users..."
-              value={searchInput}
               label="Search Users"
               color="green"
+              value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
@@ -154,7 +168,7 @@ const Users = () => {
         ))}
       </div>
 
-      <div className="overflow-auto rounded-xl shadow-md border">
+      <div className="overflow-x-auto rounded-xl shadow-md border bg-white">
         <table className="w-full table-auto text-sm">
           <thead className="bg-[#f7f7f7] text-[#339179] font-bold">
             <tr>
@@ -166,80 +180,97 @@ const Users = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map(
-                ({
-                  _id,
-                  name,
-                  date,
-                  email,
-                  role,
-                  photo,
-                  isNew,
-                  restaurantNumber,
-                  restaurantAdddress,
-                }) => (
-                  <tr key={_id} className="hover:bg-gray-50">
-                    <td className="px-4 py-4 border">
-                      <div className="flex items-center space-x-4">
-                        <div className="indicator">
-                          {isNew && (
-                            <span className="indicator-item badge badge-primary">New</span>
-                          )}
-                          <img
-                            src={photo || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
-                            alt={`${name}'s photo`}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold">{name}</p>
-                          <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
-                            {new Date(date).toLocaleString()}
-                          </p>
-                          <a href={`mailto:${email}`} className="text-sm text-blue-600 underline">
-                            {email}
-                          </a>
-                          {restaurantAdddress && (
-                            <p className="text-xs text-gray-500">{restaurantAdddress}</p>
-                          )}
-                          <br />
-                          {restaurantNumber && (
-                            <a
-                              href={`tel:${restaurantNumber}`}
-                              className="text-xs text-gray-900"
-                            >
-                              {restaurantNumber}
+            {isLoading ? (
+              [...Array(5)].map((_, idx) => (
+                <tr key={idx}>
+                  <td colSpan={3} className="px-4 py-4">
+                    <UserSkeleton />
+                  </td>
+                </tr>
+              ))
+            ) : filteredUsers.length > 0 ? (
+              <AnimatePresence>
+                {filteredUsers.map(
+                  ({
+                    _id,
+                    name,
+                    date,
+                    email,
+                    role,
+                    photo,
+                    isNew,
+                    shopMobileNumber,
+                    restaurantAdddress,
+                  }) => (
+                    <motion.tr
+                      key={_id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="hover:bg-gray-50"
+                    >
+                      <td className="px-4 py-4 border">
+                        <div className="flex items-center space-x-4">
+                          <div className="indicator">
+                            {isNew && (
+                              <span className="indicator-item badge badge-primary">New</span>
+                            )}
+                            <img
+                              src={photo || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
+                              alt={`${name}'s photo`}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <p className="font-semibold">{name}</p>
+                            <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
+                              {new Date(date).toLocaleString()}
+                            </p>
+                            <a href={`mailto:${email}`} className="text-sm text-blue-600 underline">
+                              {email}
                             </a>
-                          )}
+                            {restaurantAdddress && (
+                              <p className="text-xs text-gray-500">{restaurantAdddress}</p>
+                            )}
+                            <br />
+                            {shopMobileNumber && (
+                              <a
+                                href={`tel:${shopMobileNumber}`}
+                                className="text-xs text-gray-900"
+                              >
+                                {shopMobileNumber}
+                              </a>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className="px-4 py-2 border text-center">
-                      <button
-                        className="text-lg text-red-500 hover:text-red-700"
-                        onClick={() => handleDelete(_id)}
-                      >
-                        <AiOutlineUserDelete />
-                      </button>
-                    </td>
+                      <td className="px-4 py-2 border text-center">
+                        <button
+                          className="text-lg text-red-500 hover:text-red-700"
+                          onClick={() => handleDelete(_id)}
+                        >
+                          <AiOutlineUserDelete />
+                        </button>
+                      </td>
 
-                    <td className="px-4 py-2 border text-center">
-                      <button
-                        className="btn btn-xs btn-outline"
-                        onClick={() => {
-                          setSelectedUserId(_id);
-                          setSelectedUserRole(role);
-                          document.getElementById("role_modal").showModal();
-                        }}
-                      >
-                        {role ? role.charAt(0).toUpperCase() + role.slice(1) : "Set Role"}
-                      </button>
-                    </td>
-                  </tr>
-                )
-              )
+                      <td className="px-4 py-2 border text-center">
+                        <button
+                          className="btn btn-xs btn-outline"
+                          onClick={() => {
+                            setSelectedUserId(_id);
+                            setSelectedUserRole(role);
+                            document.getElementById("role_modal").showModal();
+                          }}
+                        >
+                          {role ? role.charAt(0).toUpperCase() + role.slice(1) : "Set Role"}
+                        </button>
+                      </td>
+                    </motion.tr>
+                  )
+                )}
+              </AnimatePresence>
             ) : (
               <tr>
                 <td colSpan={TABLE_HEAD.length} className="text-center py-6">

@@ -99,8 +99,8 @@ const Register = () => {
         <div className="hero min-h-screen max-w-7xl mx-auto md:px-5">
             <div data-aos="zoom-in" className="grid md:grid-cols-2 rounded-r-2xl shadow-2xl">
                 <div className="text-center hidden sm:block">
-                    <img className="md:w-[650px] md:h-[600px] lg:w-[685px] lg:h-[685px] rounded-l-2xl"
-                        src="https://i.ibb.co/TqjSXw8/Register.png" alt="Register"
+                    <img className="md:w-[650px] md:h-[600px] lg:w-[685px] lg:h-[670px] rounded-l-2xl"
+                        src="https://i.ibb.co/q32tCr5P/Register-Image.png" alt="Register"
                     />
                 </div>
                 <div className="lg:w-full bg-white shrink-0 rounded-r-2xl shadow-2xl">

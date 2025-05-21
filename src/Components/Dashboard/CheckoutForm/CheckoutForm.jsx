@@ -11,7 +11,7 @@ import Select from "react-select";
 
 import { Helmet } from 'react-helmet';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
-import useAddFood from '../../Hooks/useAddFood';
+import useShoppingCart from '../../Hooks/useShoppingCart';
 import useAuth from '../../Hooks/useAuth';
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
@@ -30,7 +30,7 @@ const CheckoutForm = () => {
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [loading, setLoading] = useState(false);
     const [quantities, setQuantities] = useState({});
-    const [cartFood, refetch] = useAddFood();
+    const [cartFood, refetch] = useShoppingCart();
     const { user } = useAuth();
     const [selectedUpazila, setSelectedUpazila] = useState(null);
     const [upazilaOptions, setUpazilaOptions] = useState([]);
@@ -299,7 +299,7 @@ const CheckoutForm = () => {
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axiosSecure.delete(`/addFood/${id}`)
+                    axiosSecure.delete(`/shoppingCart/${id}`)
                         .then(res => {
                             // console.log(res.data);
                             refetch()
@@ -470,15 +470,15 @@ const CheckoutForm = () => {
                                                                 <div className="h-16 w-16  md:mr-0 rounded-md overflow-hidden">
                                                                     <img
                                                                         src={item.
-                                                                            foodImage}
-                                                                        alt={item.restaurantName}
+                                                                            productImage}
+                                                                        alt={item.shopName}
 
                                                                         className="object-cover"
                                                                     />
                                                                 </div>
                                                             </div>
                                                             <div className='mr-20 md:mr-0'>
-                                                                <p className="font-bold flex text-[10px] md:text-[10px]">{item.foodName}
+                                                                <p className="font-bold flex text-[10px] md:text-[10px]">{item.productName}
                                                                     <div className="badge ml-3 text-[8px]">×{item.quantity}</div>
                                                                 </p>
                                                              

@@ -4,7 +4,7 @@ import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { motion } from "framer-motion";
 import useAuth from "../../Hooks/useAuth";
 import Swal from "sweetalert2";
-import useAddFood from "../../Hooks/useAddFood";
+import useShoppingCart from "../../Hooks/useShoppingCart";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
 import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
@@ -37,7 +37,7 @@ const FoodCardSkeleton = () => {
 };
 
 const DetailsShop = () => {
-  const { restaurantName } = useParams();
+  const { shopName } = useParams();
   const [foodItems, setFoodItems] = useState([]);
   const [cart, setCart] = useState([]); // Cart State
   const [isCartOpen, setIsCartOpen] = useState(false); // Sidebar Toggle
@@ -45,7 +45,7 @@ const DetailsShop = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [cartFood, refetch] = useAddFood();
+  const [cartFood, refetch] = useShoppingCart();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
   const [isOwner] = useRestaurantOwner();
@@ -54,15 +54,15 @@ const DetailsShop = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      axiosSecure.get(`/restaurantUpload/${restaurantName}`)
+      axiosSecure.get(`/sellerProfile/${shopName}`)
         .then((res) => {
-          setFoodItems(res.data?.foods || []);
+          setFoodItems(res.data?.products || []);
         })
         .finally(() => setLoading(false));
     }, 3000); // 4 seconds delay
 
     return () => clearTimeout(timer);
-  }, [restaurantName, refetch, refetchTwo]);
+  }, [shopName, refetch, refetchTwo]);
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -72,18 +72,18 @@ const DetailsShop = () => {
   }, []);
 
   useEffect(() => {
-    if (user && user.email && cart.foodName) {
+    if (user && user.email && cart.productName) {
       axiosSecure.get(`/addItem?email=${user?.email}`)
         .then(res => {
-          const itemInCart = res.data.some(cartEntry => cartEntry.foodName === cart.foodName);
+          const itemInCart = res.data.some(cartEntry => cartEntry.productName === cart.productName);
           setExistingItem(itemInCart);
         })
         .catch(error => console.error("Error checking cart:", error));
     }
-  }, [user, axiosSecure, cart.foodName]);
+  }, [user, axiosSecure, cart.productName]);
 
   // Handle Food Deletion
-  const handleDeleted = (restaurantName, foodName) => {
+  const handleDeleted = (shopName, productName) => {
     if (isAdmin || isModerator || isOwner) {
       Swal.fire({
         title: "Are you sure?",
@@ -96,12 +96,12 @@ const DetailsShop = () => {
       }).then((result) => {
         if (result.isConfirmed) {
           axiosSecure
-            .delete(`/restaurantUpload/${restaurantName}/${foodName}`)
+            .delete(`/sellerProfile/${shopName}/${productName}`)
             .then((res) => {
               if (res.data.success) {
                 Swal.fire("Deleted!", "Food item deleted successfully.", "success");
                 setFoodItems((prevFoodItems) =>
-                  prevFoodItems.filter((food) => food.foodName !== foodName)
+                  prevFoodItems.filter((food) => food.productName !== productName)
                 );
               } else {
                 Swal.fire("Error", "Failed to delete", "error");
@@ -118,21 +118,21 @@ const DetailsShop = () => {
   };
 
   // Handle Add Food to Cart
-  const handleAddFood = (food) => {
+  const handleshoppingCart = (food) => {
     if (user && user.email) {
       const foodInfo = {
         foodId: food._id,
-        foodName: food.foodName,
-        restaurantName: restaurantName,
+        productName: food.productName,
+        shopName: shopName,
         foodPrice: food.price,
-        foodImage: food.foodImage,
+        productImage: food.productImage,
         email: user.email,
         category : food.category,
         quantity : parseFloat(1)
       
       };
 
-      axiosSecure.post("/addFood", foodInfo)
+      axiosSecure.post("/shoppingCart", foodInfo)
         .then((res) => {
           if (res.data.insertedId) {
             Swal.fire("Success!", "Food added successfully!", "success");
@@ -167,7 +167,7 @@ const DetailsShop = () => {
     <div className="max-w-7xl mx-auto min-h-screen mb-5">
       <br />
       {isAdmin || isModerator || isOwner ? (
-        <Link to={"/dashboard/addFoods"}>
+        <Link to={"/dashboard/addProducts"}>
           <div className="flex justify-end items-end">
             <button className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3">
               <MdOutlineAddCircleOutline />
@@ -185,21 +185,21 @@ const DetailsShop = () => {
             <motion.div key={index} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="relative flex flex-col bg-white shadow-md border border-gray-200 rounded-lg w-[330px] h-[360px] lg:w-[400px] lg:h-[450px] mx-auto px-2 py-2">
                 <div className="relative overflow-hidden rounded-md">
-                  <motion.img src={food.foodImage} alt={food.foodName} className="h-full w-full object-cover" whileHover={{ scale: 1.1 }} />
+                  <motion.img src={food.productImage} alt={food.productName} className="h-full w-full object-cover" whileHover={{ scale: 1.1 }} />
                 </div>
                 <div className="p-4">
-                  <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.foodName || "Unavailable"}</p>
+                  <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.productName || "Unavailable"}</p>
                   <div className="flex justify-between items-center">
-                    <p className="text-red-500 text-sm">Delicious {food.foodName} from <Link to={`/restaurantUpload/${food.restaurantName}`}><span className="font-bold">{restaurantName}</span></Link>. Price: ${food.price}</p>
+                    <p className="text-red-500 text-sm">Delicious {food.productName} from <Link to={`/sellerProfile/${food.shopName}`}><span className="font-bold">{shopName}</span></Link>. Price: ${food.price}</p>
                     {isAdmin || isModerator || isOwner ? (
-                      <Link to={`/dashboard/updateFood/${food.restaurantName.foods}`}>
+                      <Link to={`/dashboard/updateFood/${food.shopName.products}`}>
                         <motion.button className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 gap-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                           <RxUpdate />
                         </motion.button>
                       </Link>
                     ) : null}
                     {isAdmin || isModerator || isOwner ? (
-                      <motion.button onClick={() => handleDeleted(restaurantName, food.foodName)} className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                      <motion.button onClick={() => handleDeleted(shopName, food.productName)} className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                         <AiOutlineDelete />
                       </motion.button>
                     ) : null}
@@ -209,7 +209,7 @@ const DetailsShop = () => {
                         <Button className="text-[#339179]">Check Your Cart</Button>
                       </Link>
                     ) : (
-                      <motion.button onClick={() => handleAddFood(food)} className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                      <motion.button onClick={() => handleshoppingCart(food)} className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                         <MdOutlineAddCircleOutline />
                       </motion.button>
                     )}
