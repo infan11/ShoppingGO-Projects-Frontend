@@ -1,5 +1,5 @@
 import useAllUserHooks from "../../Hooks/useAllUserHooks";
-import { MdOutlineAdminPanelSettings, MdOutlineRestaurant } from "react-icons/md";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { AiOutlineUserDelete } from "react-icons/ai";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState, useRef, useEffect } from "react";
@@ -8,8 +8,8 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { Input } from "@material-tailwind/react";
 import { useMotionValue, useSpring, motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
-// CountUp animation for user count
 const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }) => {
   const ref = useRef(null);
   const motionValue = useMotionValue(from);
@@ -32,7 +32,6 @@ const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }
           : formattedNumber;
       }
     });
-
     motionValue.set(to);
     return () => unsubscribe();
   }, [springValue, to, separator, motionValue]);
@@ -40,21 +39,18 @@ const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }
   return <span className={className} ref={ref} />;
 };
 
-// Skeleton loader for users
-const UserSkeleton = () => {
-  return (
-    <div className="flex items-center gap-4 p-4 border rounded-lg animate-pulse bg-white">
-      <div className="w-10 h-10 bg-gray-300 rounded-full" />
-      <div className="flex-1 space-y-2">
-        <div className="h-4 bg-gray-300 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-1/2" />
-      </div>
+const UserSkeleton = () => (
+  <div className="flex items-center gap-4 p-4 border rounded-lg animate-pulse bg-white">
+    <div className="w-10 h-10 bg-gray-300 rounded-full" />
+    <div className="flex-1 space-y-2">
+      <div className="h-4 bg-gray-300 rounded w-3/4" />
+      <div className="h-3 bg-gray-200 rounded w-1/2" />
     </div>
-  );
-};
+  </div>
+);
 
 const Users = () => {
-  const [users, isLoading, refetch] = useAllUserHooks(); // make sure your hook returns isLoading
+  const [users, isLoading, refetch] = useAllUserHooks();
   const [searchInput, setSearchInput] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const axiosSecure = useAxiosSecure();
@@ -68,65 +64,54 @@ const Users = () => {
   );
 
   const filteredUsers = sortedUsers.filter((user) => {
-    const userSearch =
+    const matchSearch =
       user.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchInput.toLowerCase()) ||
       user.role?.toLowerCase().includes(searchInput.toLowerCase());
 
-    const matchesTab =
+    const matchTab =
       activeTab === "all" ||
-      (activeTab === "admin" && user?.role === "admin") ||
-      (activeTab === "moderator" && user?.role === "moderator") ||
-      (activeTab === "owner" && user?.role === "owner");
+      (activeTab === "admin" && user.role === "admin") ||
+      (activeTab === "moderator" && user.role === "moderator") ||
+      (activeTab === "owner" && user.role === "owner");
 
-    return userSearch && matchesTab;
+    return matchSearch && matchTab;
   });
 
   const handleDelete = (userId) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "User will be permanently deleted.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#339179",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure
-          .delete(`/users/${userId}`)
-          .then(() => {
-            refetch();
-            Swal.fire("Deleted!", "The user has been deleted.", "success");
-          })
-          .catch(() => {
-            Swal.fire("Error!", "Failed to delete the user.", "error");
-          });
+        axiosSecure.delete(`/users/${userId}`).then(() => {
+          refetch();
+          toast.success("User deleted successfully.");
+        });
       }
     });
   };
 
   const updateRole = (userId, role) => {
-    let apiRole = role === "owner" ? "restaurantOwner" : role;
-
-    axiosSecure
-      .patch(`/users/${apiRole}/${userId}`)
-      .then((res) => {
-        if (res.data.modifiedCount > 0) {
-          refetch();
-          toast.success(`Role updated to ${role}`);
-        }
-      })
-      .catch(() => {
-        toast.error("Failed to update role");
-      });
+    const apiRole = role === "owner" ? "restaurantOwner" : role;
+    axiosSecure.patch(`/users/${apiRole}/${userId}`).then((res) => {
+      if (res.data.modifiedCount > 0) {
+        refetch();
+        toast.success(`Role updated to ${role}`);
+      }
+    });
   };
 
   return (
-    <div className=" px-1">
+    <div className="p-4 font-Kanit">
       <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <h2 className="text-2xl font-bold text-[#339179] flex items-center gap-2">
-          Manage Users
+          Manage Users{" "}
           <CountUp
             from={0}
             to={users.length}
@@ -136,31 +121,28 @@ const Users = () => {
           />
         </h2>
 
-        <div className="w-full md:w-60">
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute h-4 w-4 text-[#339179] top-3 left-4" />
-            <Input
-              type="text"
-              className="pl-10 text-[#339179] font-semibold"
-              placeholder="Search users..."
-              label="Search Users"
-              color="green"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-          </div>
+        <div className="w-full md:w-60 relative">
+          <MagnifyingGlassIcon className="absolute h-4 w-4 text-[#339179] top-3 left-4" />
+          <Input
+            type="text"
+            className="pl-10 text-[#339179] font-semibold"
+            placeholder="Search users..."
+            label="Search Users"
+            color="green"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
         </div>
       </div>
 
-      <div className="tabs mb-6 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 mb-4">
         {["all", "admin", "moderator", "owner"].map((tab) => (
           <button
             key={tab}
-            className={`tab px-4 py-1 rounded-full transition ${
-              activeTab === tab
-                ? "bg-[#339179] text-white font-bold shadow-md"
+            className={`px-4 py-1 rounded-full transition ${activeTab === tab
+                ? "bg-[#339179] text-white font-bold"
                 : "bg-white text-[#339179] border border-[#339179]"
-            }`}
+              }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -168,119 +150,75 @@ const Users = () => {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-xl shadow-md border bg-white">
-        <table className="w-full table-auto text-sm">
-          <thead className="bg-[#f7f7f7] text-[#339179] font-bold">
-            <tr>
-              {TABLE_HEAD.map((head) => (
-                <th key={head} className="px-4 py-2 text-center">
-                  {head}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              [...Array(5)].map((_, idx) => (
-                <tr key={idx}>
-                  <td colSpan={3} className="px-4 py-4">
-                    <UserSkeleton />
-                  </td>
-                </tr>
-              ))
-            ) : filteredUsers.length > 0 ? (
-              <AnimatePresence>
-                {filteredUsers.map(
-                  ({
-                    _id,
-                    name,
-                    date,
-                    email,
-                    role,
-                    photo,
-                    isNew,
-                    shopMobileNumber,
-                    restaurantAdddress,
-                  }) => (
-                    <motion.tr
-                      key={_id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="hover:bg-gray-50"
-                    >
-                      <td className="px-4 py-4 border">
-                        <div className="flex items-center space-x-4">
-                          <div className="indicator">
-                            {isNew && (
-                              <span className="indicator-item badge badge-primary">New</span>
-                            )}
-                            <img
-                              src={photo || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
-                              alt={`${name}'s photo`}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                          </div>
-                          <div>
-                            <p className="font-semibold">{name}</p>
-                            <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
-                              {new Date(date).toLocaleString()}
-                            </p>
-                            <a href={`mailto:${email}`} className="text-sm text-blue-600 underline">
-                              {email}
-                            </a>
-                            {restaurantAdddress && (
-                              <p className="text-xs text-gray-500">{restaurantAdddress}</p>
-                            )}
-                            <br />
-                            {shopMobileNumber && (
-                              <a
-                                href={`tel:${shopMobileNumber}`}
-                                className="text-xs text-gray-900"
-                              >
-                                {shopMobileNumber}
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </td>
+      {isLoading ? (
+        <div className="grid gap-4">
+          {[...Array(4)].map((_, i) => (
+            <UserSkeleton key={i} />
+          ))}
+        </div>
+      ) : filteredUsers.length === 0 ? (
+        <div className="text-center text-gray-500 py-8">No users found.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredUsers.map((user) => (
+          <Link >
+            <motion.div
+              key={user._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="p-4 border rounded-xl bg-white shadow hover:shadow-md transition"
+            >
+              <div className="flex items-center gap-4">
+                <img
+                  src={user.photo || "https://i.ibb.co/PGwHS087/profile-Imagw.jpg"}
+                  className="w-14 h-14 rounded-full object-cover"
+                  alt="profile"
+                />
+                <div>
+                  <Link to={`/dashboard/users/${user._id}`}><p className="font-semibold text-lg underline">{user.name}</p></Link>
+                  <p className="text-sm text-gray-600">{user.email}</p>
+                  <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
 
-                      <td className="px-4 py-2 border text-center">
-                        <button
-                          className="text-lg text-red-500 hover:text-red-700"
-                          onClick={() => handleDelete(_id)}
-                        >
-                          <AiOutlineUserDelete />
-                        </button>
-                      </td>
-
-                      <td className="px-4 py-2 border text-center">
-                        <button
-                          className="btn btn-xs btn-outline"
-                          onClick={() => {
-                            setSelectedUserId(_id);
-                            setSelectedUserRole(role);
-                            document.getElementById("role_modal").showModal();
-                          }}
-                        >
-                          {role ? role.charAt(0).toUpperCase() + role.slice(1) : "Set Role"}
-                        </button>
-                      </td>
-                    </motion.tr>
-                  )
-                )}
-              </AnimatePresence>
-            ) : (
-              <tr>
-                <td colSpan={TABLE_HEAD.length} className="text-center py-6">
-                  No users found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                  </p>
+                  {user.date && (
+                    <p className="text-sm  text-[#339179]  ">
+                      {new Date(user.date).toLocaleString()}
+                    </p>
+                  )}
+                  {user.address && (
+                    <p className="text-xs text-gray-500">{user.address}</p>
+                  )}
+                  {user.shopMobileNumber && (
+                    <a href={`tel:${user.shopMobileNumber}`} className="text-xs text-blue-700">
+                      {user.shopMobileNumber}
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 flex justify-between items-center">
+                <button
+                  className="btn btn-sm btn-outline text-red-500 hover:bg-red-100"
+                  onClick={() => handleDelete(user._id)}
+                >
+                  <AiOutlineUserDelete />
+                </button>
+                <button
+                  className="btn btn-sm btn-outline"
+                  onClick={() => {
+                    setSelectedUserId(user._id);
+                    setSelectedUserRole(user.role);
+                    document.getElementById("role_modal").showModal();
+                  }}
+                >
+                  {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Set Role"}
+                </button>
+              </div>
+            </motion.div>
+          </Link>
+          ))}
+        </div>
+      )}
 
       {/* Role Modal */}
       <dialog id="role_modal" className="modal">
@@ -293,9 +231,8 @@ const Users = () => {
             {["user", "admin", "moderator", "owner"].map((roleOption) => (
               <button
                 key={roleOption}
-                className={`btn ${
-                  selectedUserRole === roleOption ? "btn-success text-white" : "btn-outline"
-                }`}
+                className={`btn ${selectedUserRole === roleOption ? "btn-success text-white" : "btn-outline"
+                  }`}
                 disabled={selectedUserRole === roleOption}
                 onClick={() => {
                   updateRole(selectedUserId, roleOption);

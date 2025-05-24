@@ -47,6 +47,7 @@ import Hp from "../../Home/Hp/Hp";
 import Addidas from "../../Home/Addidas/Addidas";
 import SellerProfilePage from "../../Navbar/SellerProfilePage/SellerProfile";
 import AddProducts from "../../Dashboard/AddProducts/AddProducts";
+import DetailsUser from "../../Dashboard/DetailsUser/DetailsUser";
 
 
 export const router = createBrowserRouter([
@@ -162,9 +163,13 @@ export const router = createBrowserRouter([
         path: "/dashboard/addProducts",
         element: <PrivateRoutes><AddProducts/></PrivateRoutes>,
       },
+      // {
+      //   path: "/dashboard/RrestaurantProfile",
+      //   element: <PrivateRoutes><RrestaurantProfile /></PrivateRoutes>,
+      // },
       {
-        path: "/dashboard/RrestaurantProfile",
-        element: <PrivateRoutes><RrestaurantProfile /></PrivateRoutes>,
+         path : "/dashboard/users/:id",
+         element : <DetailsUser/>
       },
       {
         path: "/dashboard/adminHome",
