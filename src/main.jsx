@@ -8,53 +8,59 @@ import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Circles } from 'react-loader-spinner';
 import LanguageProvider from './Components/Provider/LanguageProvider/LanguageProvider';
-import store from '././Redux/store';
+import store from './Redux/store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { setLoading } from './Redux/Features/LoadingSlice/LoadingSlice';
+import InternetStatus from './InternetStatus/InternetStatus';
 
 const queryClient = new QueryClient();
 
 const Loader = () => (
-  <div className="flex justify-center items-center min-h-screen  ">
-  <div>
-   <Circles
-                    height="90"
-                    width="90"
-                    color="#339179"
-                    ariaLabel="circles-loading"
-                    visible={true}
-                />
-  </div>
+  <div className="flex justify-center items-center min-h-screen">
+    <div>
+      <Circles
+        height="90"
+        width="90"
+        color="#339179"
+        ariaLabel="circles-loading"
+        visible={true}
+      />
+    </div>
   </div>
 );
 
-const AppWithLoader = () => {
-const dispatch  = useDispatch();
-const isLoading = useSelector((state) => state.loading.isLoading)
+const         AppWithLoader = () => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.loading.isLoading);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-   dispatch(setLoading(false))
-    } ,1500);
+      dispatch(setLoading(false));
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  return isLoading ? <Loader /> : <RouterProvider router={router} />;
+  return (
+    <>
+      <InternetStatus />  {/* Add InternetStatus alert here */}
+      {isLoading ? <Loader /> : <RouterProvider router={router} />}
+    </>
+  );
 };
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <LanguageProvider>
-   <Provider store={store}>
-   <AuthProvider >
-    
-    <Toaster />
-    <QueryClientProvider client={queryClient}>
-      <div className="font-Kanit bg-gradient-to-br from-[#d4f1f4] text-black">
-        <AppWithLoader />
-      </div>
-    </QueryClientProvider>
-  </AuthProvider>
-   </Provider>
+      <Provider store={store}>
+        <AuthProvider>
+          <Toaster />
+          <QueryClientProvider client={queryClient}>
+            <div className="font-Kanit bg-white text-black">
+            <AppWithLoader />
+            </div>
+          </QueryClientProvider>
+        </AuthProvider>
+      </Provider>
     </LanguageProvider>
   </StrictMode>
 );

@@ -1,5 +1,5 @@
 import { Button, Input } from "@material-tailwind/react";
-import { FaHamburger, FaUserCircle } from "react-icons/fa";
+import { FaHamburger, FaUserCircle, FaWifi } from "react-icons/fa";
 import {
   Menu,
   MenuHandler,
@@ -31,6 +31,8 @@ import useShoppingCart from "../Hooks/useShoppingCart";
 import useLanguage from "../Hooks/useLanguage";
 import useRestaurantData from "../Hooks/useRestaurantData";
 import SearchBar from "./SearchBar/SearchBar";
+import InternetShow from "./InternetShow/InternetShow";
+
 
 const Navbar = () => {
 
@@ -39,12 +41,12 @@ const Navbar = () => {
     const [isModerator] = useModerator();
     const [isOwner] = useRestaurantOwner();
     const [cartFood] = useShoppingCart()
- 
+  
     const [restaurantData] = useRestaurantData();
     const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [placeholder, setPlaceholder] = useState("Search in Shop");
+  const [placeholder, setPlaceholder] = useState("Search in Shop")
   const wrapperRef = useRef(null);
 
 
@@ -242,7 +244,12 @@ const Navbar = () => {
       </div>
         <div className="navbar-end gap-2 ">
       
-     
+  <div>
+  <div className="flex justify-center items-center">
+     <InternetShow/>
+    
+
+     </div>
           <div>
           <Menu>
         {/* <MenuHandler>
@@ -265,6 +272,7 @@ const Navbar = () => {
         </MenuList>
       </Menu>
           </div>
+  </div>
           {
             user ? <>
               <Menu>
