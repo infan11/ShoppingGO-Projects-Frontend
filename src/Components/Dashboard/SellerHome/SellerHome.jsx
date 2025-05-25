@@ -1,16 +1,16 @@
 import React from 'react';
 import useAuth from '../../Hooks/useAuth';
 
-const OwnerHome = () => {
+const SellerHome = () => {
     const {user} = useAuth();
     return (
         <div>
            
-             OwnerHome : {user?.name || user?.displayName}
+             sellerHome : {user?.name || user?.displayName}
          <br />
-          OwnerHome Email : {user?.email}
+          sellerHome Email : {user?.email}
         </div>
     );
 };
 
-export default OwnerHome;
+export default SellerHome;

@@ -17,13 +17,13 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import useAuth from "../../Hooks/useAuth";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
-import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
+import useRestaurantseller from "../../Hooks/useSeller";
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
-  const [isOwner] = useRestaurantOwner();
+  const [isSeller] = useRestaurantseller();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -54,15 +54,16 @@ const Dashboard = () => {
     } else if (isModerator) {
       return [
         { to: "/dashboard/moderator", icon: <MdOutlineAddModerator />, label: "Moderator Home" },
-        { to: "/dashboard/ownerHome", icon: <FaRegUser />, label: "Owner Home" },
+          { to: "/dashboard/users", icon: <LuUserSearch />, label: "All Users" },
+        { to: "/dashboard/sellerHome", icon: <FaRegUser />, label: "seller Home" },
         { to: "/dashboard/uploadInfo", icon: <FaRegUser />, label: "Upload Info" },
         { to: "/dashboard/myOrder", icon: <RiShoppingBag4Line />, label: "My Order" },
         { to: "/dashboard/paymentHistory", icon: <PiContactlessPaymentLight />, label: "Payment History" },
         { to: "/dashboard/userHome", icon: <FaRegUser />, label: "User Home" },
       ];
-    } else if (isOwner) {
+    } else if (isSeller) {
       return [
-        { to: "/dashboard/ownerHome", icon: <FaRegUser />, label: "Owner Home" },
+        { to: "/dashboard/sellerHome", icon: <FaRegUser />, label: "seller Home" },
         { to: "/dashboard/uploadInfo", icon: <FaRegUser />, label: "Upload Info" },
         { to: "/dashboard/myOrder", icon: <RiShoppingBag4Line />, label: "My Order" },
         { to: "/dashboard/paymentHistory", icon: <PiContactlessPaymentLight />, label: "Payment History" },

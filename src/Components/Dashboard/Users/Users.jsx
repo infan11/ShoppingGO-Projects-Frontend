@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { Input } from "@material-tailwind/react";
-import { useMotionValue, useSpring, motion, AnimatePresence } from "framer-motion";
+import { useMotionValue, useSpring, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }) => {
@@ -56,6 +56,8 @@ const Users = () => {
   const axiosSecure = useAxiosSecure();
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserRole, setSelectedUserRole] = useState("");
+  const USERS_PER_PAGE = 12;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const TABLE_HEAD = ["Information", "Action", "Role"];
 
@@ -73,10 +75,20 @@ const Users = () => {
       activeTab === "all" ||
       (activeTab === "admin" && user.role === "admin") ||
       (activeTab === "moderator" && user.role === "moderator") ||
-      (activeTab === "owner" && user.role === "owner");
+      (activeTab === "seller" && user.role === "seller");
 
     return matchSearch && matchTab;
   });
+
+  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchInput, activeTab]);
 
   const handleDelete = (userId) => {
     Swal.fire({
@@ -98,7 +110,7 @@ const Users = () => {
   };
 
   const updateRole = (userId, role) => {
-    const apiRole = role === "owner" ? "restaurantOwner" : role;
+    const apiRole = role === "seller" ? "seller" : role;
     axiosSecure.patch(`/users/${apiRole}/${userId}`).then((res) => {
       if (res.data.modifiedCount > 0) {
         refetch();
@@ -136,12 +148,12 @@ const Users = () => {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
-        {["all", "admin", "moderator", "owner"].map((tab) => (
+        {["all", "admin", "moderator", "seller"].map((tab) => (
           <button
             key={tab}
             className={`px-4 py-1 rounded-full transition ${activeTab === tab
-                ? "bg-[#339179] text-white font-bold"
-                : "bg-white text-[#339179] border border-[#339179]"
+              ? "bg-[#339179] text-white font-bold"
+              : "bg-white text-[#339179] border border-[#339179]"
               }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -156,68 +168,86 @@ const Users = () => {
             <UserSkeleton key={i} />
           ))}
         </div>
-      ) : filteredUsers.length === 0 ? (
+      ) : paginatedUsers.length === 0 ? (
         <div className="text-center text-gray-500 py-8">No users found.</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredUsers.map((user) => (
-          <Link >
-            <motion.div
-              key={user._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="p-4 border rounded-xl bg-white shadow hover:shadow-md transition"
-            >
-              <div className="flex items-center gap-4">
-                <img
-                  src={user.photo || "https://i.ibb.co/PGwHS087/profile-Imagw.jpg"}
-                  className="w-14 h-14 rounded-full object-cover"
-                  alt="profile"
-                />
-                <div>
-                  <Link to={`/dashboard/users/${user._id}`}><p className="font-semibold text-lg underline">{user.name}</p></Link>
-                  <p className="text-sm text-gray-600">{user.email}</p>
-                  <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {paginatedUsers.map((user) => (
+              <Link key={user._id} to="#">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="p-4 border rounded-xl bg-white shadow hover:shadow-md transition"
+                >
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={user.photo || "https://i.ibb.co/PGwHS087/profile-Imagw.jpg"}
+                      className="w-14 h-14 rounded-full object-cover"
+                      alt="profile"
+                    />
+                    <div>
+                      <Link to={`/dashboard/users/${user._id}`}><p className="font-semibold text-lg underline">{user.name}</p></Link>
+                      <p className="text-sm text-gray-600">{user.email}</p>
+                      <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
+                        {user.role}
+                      </p>
+                      {user.date && (
+                        <p className="text-sm text-[#339179]">
+                          {new Date(user.date).toLocaleString()}
+                        </p>
+                      )}
+                      {user.address && (
+                        <p className="text-xs text-gray-500">{user.address}</p>
+                      )}
+                      {user.shopMobileNumber && (
+                        <a href={`tel:${user.shopMobileNumber}`} className="text-xs text-blue-700">
+                          {user.shopMobileNumber}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4 flex justify-between items-center">
+                    <button
+                      className="btn btn-sm btn-outline text-red-500 hover:bg-red-100"
+                      onClick={() => handleDelete(user._id)}
+                    >
+                      <AiOutlineUserDelete />
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline"
+                      onClick={() => {
+                        setSelectedUserId(user._id);
+                        setSelectedUserRole(user.role);
+                        document.getElementById("role_modal").showModal();
+                      }}
+                    >
+                      {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Set Role"}
+                    </button>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </div>
 
-                  </p>
-                  {user.date && (
-                    <p className="text-sm  text-[#339179]  ">
-                      {new Date(user.date).toLocaleString()}
-                    </p>
-                  )}
-                  {user.address && (
-                    <p className="text-xs text-gray-500">{user.address}</p>
-                  )}
-                  {user.shopMobileNumber && (
-                    <a href={`tel:${user.shopMobileNumber}`} className="text-xs text-blue-700">
-                      {user.shopMobileNumber}
-                    </a>
-                  )}
-                </div>
-              </div>
-              <div className="mt-4 flex justify-between items-center">
-                <button
-                  className="btn btn-sm btn-outline text-red-500 hover:bg-red-100"
-                  onClick={() => handleDelete(user._id)}
-                >
-                  <AiOutlineUserDelete />
-                </button>
-                <button
-                  className="btn btn-sm btn-outline"
-                  onClick={() => {
-                    setSelectedUserId(user._id);
-                    setSelectedUserRole(user.role);
-                    document.getElementById("role_modal").showModal();
-                  }}
-                >
-                  {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Set Role"}
-                </button>
-              </div>
-            </motion.div>
-          </Link>
-          ))}
-        </div>
+          {/* Pagination Controls */}
+          <div className="flex justify-center mt-6">
+            <div className="join">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <input
+                  key={index}
+                  className="join-item  bg-[#339179] "
+                  type="radio"
+                  name="page"
+                  aria-label={(index + 1).toString()}
+                  checked={currentPage === index + 1}
+                  onChange={() => setCurrentPage(index + 1)}
+                />
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {/* Role Modal */}
@@ -228,7 +258,7 @@ const Users = () => {
           </form>
           <h3 className="font-bold text-lg mb-4">Select Role</h3>
           <div className="flex flex-col gap-2">
-            {["user", "admin", "moderator", "owner"].map((roleOption) => (
+            {["user", "admin", "moderator", "seller"].map((roleOption) => (
               <button
                 key={roleOption}
                 className={`btn ${selectedUserRole === roleOption ? "btn-success text-white" : "btn-outline"

@@ -15,7 +15,7 @@ import useShoppingCart from "../../../Hooks/useShoppingCart";
 import useAdmin from "../../../Hooks/useAdmin";
 import useModerator from "../../../Hooks/useModerator";
 import useRestaurantData from "../../../Hooks/useRestaurantData";
-import useRestaurantOwner from "../../../Hooks/useRestaurantOwner";
+import useSeller from "../../../Hooks/useSeller";
 
 const Oppo = () => {
   const { shopName } = useParams();
@@ -27,7 +27,7 @@ const Oppo = () => {
   const [cartFood, refetch] = useShoppingCart();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
-  const [isOwner] = useRestaurantOwner();
+  const [isSeller] = useSeller();
   const [isRestaurantData, refetchTwo] = useRestaurantData();
   const [existingItem, setExistingItem] = useState(false);
   const Burgerproducts = isRestaurantData
@@ -111,7 +111,7 @@ const Oppo = () => {
   return (
     <div className="max-w-7xl mx-auto min-h-screen mb-5">
       <br />
-      {/* {isAdmin || isModerator || isOwner ? (
+      {/* {isAdmin || isModerator || isSeller ? (
         <Link to={"/dashboard/addProducts"}>
           <div className="flex justify-end items-end">
             <button className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3">

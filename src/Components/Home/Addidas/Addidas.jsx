@@ -11,7 +11,7 @@ import useAuth from "../../Hooks/useAuth";
 import useShoppingCart from "../../Hooks/useShoppingCart";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
-import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
+import useSeller from "../../Hooks/useSeller";
 import useRestaurantData from "../../Hooks/useRestaurantData";
 
 const Addidas = () => {
@@ -25,7 +25,7 @@ const Addidas = () => {
   const [cartFood, refetch] = useShoppingCart();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
-  const [isOwner] = useRestaurantOwner();
+  const [isSeller] = useSeller();
   const [isRestaurantData, refetchTwo] = useRestaurantData();
 
   const biryaniproducts =

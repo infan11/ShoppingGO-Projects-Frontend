@@ -23,7 +23,7 @@ import { Link, NavLink } from "react-router-dom";
 import { IoMdLogIn } from "react-icons/io";
 import useAdmin from "../Hooks/useAdmin";
 import useModerator from "../Hooks/useModerator";
-import useRestaurantOwner from "../Hooks/useRestaurantOwner";
+import useSeller from "../Hooks/useSeller";
 import { HiOutlineMenu } from "react-icons/hi";
 import useAuth from "../Hooks/useAuth";
 
@@ -39,7 +39,7 @@ const Navbar = () => {
   const { logout, user } = useAuth();
     const [isAdmin] = useAdmin();
     const [isModerator] = useModerator();
-    const [isOwner] = useRestaurantOwner();
+    const [isSeller] = useSeller();
     const [cartFood] = useShoppingCart()
   
     const [restaurantData] = useRestaurantData();
@@ -378,7 +378,7 @@ const Navbar = () => {
                     </Link>
                   }
                   {
-                    user && isOwner && <Link to={"/dashboard/ownerHome"}>
+                    user && isSeller && <Link to={"/dashboard/sellerHome"}>
                       <MenuItem className="flex items-center gap-2">
                         <svg
                           width="14"
@@ -402,7 +402,7 @@ const Navbar = () => {
                     </Link>
                   }
                   {
-                    user && !isAdmin && !isModerator && !isOwner && <Link to={"/dashboard/userHome"}>
+                    user && !isAdmin && !isModerator && !isSeller && <Link to={"/dashboard/userHome"}>
                       <MenuItem className="flex items-center gap-2">
                         <svg
                           width="14"

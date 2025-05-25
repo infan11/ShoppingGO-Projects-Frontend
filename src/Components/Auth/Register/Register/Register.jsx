@@ -43,8 +43,9 @@ const Register = () => {
             const usersInfo = {
                 name: data.displayName,
                 email: data.email,
+                date: new Date(),
                 status: "Verified",
-                date: new Date()
+                
             };
 
             await toast.promise(

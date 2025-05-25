@@ -18,14 +18,14 @@ const Profile = () => {
         const photo = data.photo?.[0];
         const imageData= await imageUpload(photo);
      
-                const ownerProfile = {
+                const sellerProfile = {
                   shopName : data.shopName,
                   restaurantEmail: data.restaurantEmail,
                   restaurantAdddress : data.restaurantAdddress,
                   shopMobileNumber : parseFloat(data.shopMobileNumber),
                   photo: imageData?.data?.display_url  || ""
                 };
-                axiosPublic.post("/ownerProfile" , ownerProfile)
+                axiosPublic.post("/sellerProfile" , sellerProfile)
                 .then(res => {
                     console.log("SEND TO DATABASE",res.data);
                     if(res.data.insertedId){

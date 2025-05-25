@@ -12,11 +12,10 @@ import ResetPassword from "../../Auth/ResetPassword/ResetPassword";
 
 import Profile from "../../Dashboard/Profle/Profile";
 import RestaurantRegister from "../../Auth/RestaurantRegister/RestaurantRegister";
-import RrestaurantProfile from "../../Dashboard/RrestaurantProfile/RrestaurantProfile";
 import PrivateRoutes from "../PrivateRoutes/PrivateRoutes";
 import AdminHome from "../../Dashboard/AdminHome/AdminHome";
 import ModeratorHome from "../../Dashboard/ModeratorHome/ModeratorHome";
-import OwnerHome from "../../Dashboard/OwnerHome/OwnerHome";
+import SellerHome from "../../Dashboard/SellerHome/SellerHome";
 import UserHome from "../../Dashboard/UserHome/UserHome";
 import UpdateFood from "../../Dashboard/UpdateFood/UpdateFood";
 import PaymentHistory from "../../Dashboard/PaymentHistory/PaymentHistory";
@@ -25,7 +24,6 @@ import Users from "../../Dashboard/Users/Users";
 import Dashboard from "../../Dashboard/Dashboard/Dashboard";
 import MyOrder from "../../Dashboard/MyOrder/MyOrder";
 import UploadInfo from "../../Dashboard/UploadInfo/UploadInfo";
-import DeatilsRestaurants from "../../Restaurants/DetailsShop/DetailsShop";
 import MyProfile from "../../MyProfile/MyProfile/MyProfile";
 import CheckoutForm from "../../Dashboard/CheckoutForm/CheckoutForm";
 // import SSLCommerce from "../../Dashboard/PaymentMethod/SSLCommerce/SSLCommerce";
@@ -180,8 +178,8 @@ export const router = createBrowserRouter([
         element: <PrivateRoutes><ModeratorHome /></PrivateRoutes>,
       },
       {
-        path: "/dashboard/ownerHome",
-        element: <PrivateRoutes><OwnerHome /></PrivateRoutes>,
+        path: "/dashboard/sellerHome",
+        element: <PrivateRoutes><SellerHome /></PrivateRoutes>,
       },
       {
         path: "/dashboard/uploadInfo",

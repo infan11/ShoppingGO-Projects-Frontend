@@ -88,7 +88,7 @@ const DetailsUser = () => {
         {data.photo && (
           <div className="flex justify-center mb-6">
             <img
-              src={data.photo}
+              src={data.photo || "https://i.ibb.co.com/PGwHS087/profile-Imagw.jpg"}
               alt="User"
               className="w-36 h-36 object-cover rounded-full border-2 border-[#fff] shadow-xl transition-transform hover:scale-110 print:border-0 print:rounded-none print:shadow-none"
             />

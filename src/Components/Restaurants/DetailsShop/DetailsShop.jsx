@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import useShoppingCart from "../../Hooks/useShoppingCart";
 import useAdmin from "../../Hooks/useAdmin";
 import useModerator from "../../Hooks/useModerator";
-import useRestaurantOwner from "../../Hooks/useRestaurantOwner";
+import useSeller from "../../Hooks/useSeller";
 import { AiOutlineDelete } from "react-icons/ai";
 import useRestaurantData from "../../Hooks/useRestaurantData";
 import { RxUpdate } from "react-icons/rx";
@@ -48,7 +48,7 @@ const DetailsShop = () => {
   const [cartFood, refetch] = useShoppingCart();
   const [isAdmin] = useAdmin();
   const [isModerator] = useModerator();
-  const [isOwner] = useRestaurantOwner();
+  const [isSeller] = useSeller();
   const [, refetchTwo] = useRestaurantData();
   const [existingItem, setExistingItem] = useState(false);
 
@@ -84,7 +84,7 @@ const DetailsShop = () => {
 
   // Handle Food Deletion
   const handleDeleted = (shopName, productName) => {
-    if (isAdmin || isModerator || isOwner) {
+    if (isAdmin || isModerator || isSeller) {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -166,7 +166,7 @@ const DetailsShop = () => {
   return (
     <div className="max-w-7xl mx-auto min-h-screen mb-5">
       <br />
-      {isAdmin || isModerator || isOwner ? (
+      {isAdmin || isModerator || isSeller ? (
         <Link to={"/dashboard/addProducts"}>
           <div className="flex justify-end items-end">
             <button className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3">
@@ -191,14 +191,14 @@ const DetailsShop = () => {
                   <p className="mb-2 bg-[#339179] text-white text-xs py-1 px-3 rounded-full w-fit">{food.productName || "Unavailable"}</p>
                   <div className="flex justify-between items-center">
                     <p className="text-red-500 text-sm">Delicious {food.productName} from <Link to={`/sellerProfile/${food.shopName}`}><span className="font-bold">{shopName}</span></Link>. Price: ${food.price}</p>
-                    {isAdmin || isModerator || isOwner ? (
+                    {isAdmin || isModerator || isSeller ? (
                       <Link to={`/dashboard/updateFood/${food.shopName.products}`}>
                         <motion.button className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 gap-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                           <RxUpdate />
                         </motion.button>
                       </Link>
                     ) : null}
-                    {isAdmin || isModerator || isOwner ? (
+                    {isAdmin || isModerator || isSeller ? (
                       <motion.button onClick={() => handleDeleted(shopName, food.productName)} className="text-xl font-bold bg-[#339179] text-white rounded-full shadow-lg p-3 ml-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                         <AiOutlineDelete />
                       </motion.button>
