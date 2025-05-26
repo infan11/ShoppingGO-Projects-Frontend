@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { Input } from "@material-tailwind/react";
 import { useMotionValue, useSpring, motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
 
 const CountUp = ({ to, from = 0, duration = 2, separator = ",", className = "" }) => {
   const ref = useRef(null);
@@ -56,15 +57,14 @@ const Users = () => {
   const axiosSecure = useAxiosSecure();
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserRole, setSelectedUserRole] = useState("");
+  const { user: currentUser } = useAuth();
   const USERS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const TABLE_HEAD = ["Information", "Action", "Role"];
+  const currentUserInfo = users?.find((u) => u.email === currentUser?.email);
+  const currentRole = currentUserInfo?.role;
 
-  const sortedUsers = [...users].sort(
-    (a, b) => new Date(b.date || 0) - new Date(a.date || 0)
-  );
-
+  const sortedUsers = [...users].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   const filteredUsers = sortedUsers.filter((user) => {
     const matchSearch =
       user.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -110,29 +110,42 @@ const Users = () => {
   };
 
   const updateRole = (userId, role) => {
-    const apiRole = role === "seller" ? "seller" : role;
-    axiosSecure.patch(`/users/${apiRole}/${userId}`).then((res) => {
-      if (res.data.modifiedCount > 0) {
-        refetch();
-        toast.success(`Role updated to ${role}`);
-      }
-    });
+    const allowedByModerator = role === "user" || role === "seller";
+
+    if (currentRole === "admin" || (currentRole === "moderator" && allowedByModerator)) {
+      axiosSecure.patch(`/users/${role}/${userId}`).then((res) => {
+        if (res.data.modifiedCount > 0) {
+          refetch();
+          toast.success(`Role updated to ${role}`);
+        }
+      });
+    } else {
+      Swal.fire("Access Denied", "You are not allowed to assign this role.", "error");
+    }
+  };
+
+  const openRoleModal = (user) => {
+    if (currentRole === "moderator" && (user.role === "admin" || user.role === "moderator")) {
+      return Swal.fire("Access Denied", "You cannot change this user's role.", "error");
+    }
+
+    if (currentRole === "admin" || currentRole === "moderator") {
+      setSelectedUserId(user._id);
+      setSelectedUserRole(user.role);
+      document.getElementById("role_modal").showModal();
+    } else {
+      Swal.fire("Access Denied", "Only admins or moderators can assign roles.", "error");
+    }
   };
 
   return (
     <div className="p-4 font-Kanit">
+      {/* Header Section */}
       <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <h2 className="text-2xl font-bold text-[#339179] flex items-center gap-2">
           Manage Users{" "}
-          <CountUp
-            from={0}
-            to={users.length}
-            separator=","
-            duration={2}
-            className="text-4xl font-bold text-[#339179]"
-          />
+          <CountUp from={0} to={users.length} separator="," duration={2} className="text-4xl" />
         </h2>
-
         <div className="w-full md:w-60 relative">
           <MagnifyingGlassIcon className="absolute h-4 w-4 text-[#339179] top-3 left-4" />
           <Input
@@ -147,14 +160,16 @@ const Users = () => {
         </div>
       </div>
 
+      {/* Role Tabs */}
       <div className="flex flex-wrap gap-2 mb-4">
         {["all", "admin", "moderator", "seller"].map((tab) => (
           <button
             key={tab}
-            className={`px-4 py-1 rounded-full transition ${activeTab === tab
-              ? "bg-[#339179] text-white font-bold"
-              : "bg-white text-[#339179] border border-[#339179]"
-              }`}
+            className={`px-4 py-1 rounded-full text-sm font-medium transition ${
+              activeTab === tab
+                ? "bg-[#339179] text-white shadow-sm"
+                : "bg-gray-100 text-[#339179] hover:bg-[#e6f7f3]"
+            }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -162,89 +177,90 @@ const Users = () => {
         ))}
       </div>
 
+      {/* Users Display */}
       {isLoading ? (
-        <div className="grid gap-4">
-          {[...Array(4)].map((_, i) => (
-            <UserSkeleton key={i} />
-          ))}
-        </div>
+        <div className="grid gap-4">{[...Array(4)].map((_, i) => <UserSkeleton key={i} />)}</div>
       ) : paginatedUsers.length === 0 ? (
         <div className="text-center text-gray-500 py-8">No users found.</div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {paginatedUsers.map((user) => (
-              <Link key={user._id} to="#">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="p-4 border rounded-xl bg-white shadow hover:shadow-md transition"
-                >
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={user.photo || "https://i.ibb.co/PGwHS087/profile-Imagw.jpg"}
-                      className="w-14 h-14 rounded-full object-cover"
-                      alt="profile"
-                    />
-                    <div>
-                      <Link to={`/dashboard/users/${user._id}`}><p className="font-semibold text-lg underline">{user.name}</p></Link>
-                      <p className="text-sm text-gray-600">{user.email}</p>
-                      <p className="text-sm text-white rounded-full bg-[#339179] text-center px-5">
-                        {user.role}
+              <motion.div
+                key={user._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
+                className="p-4 border rounded-xl bg-white shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <img
+                    src={user.photo || "https://i.ibb.co/PGwHS087/profile-Imagw.jpg"}
+                    alt="profile"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-[#339179]"
+                  />
+                  <div className="flex-1 space-y-1">
+                    <Link to={`/dashboard/users/${user._id}`}>
+                      <p className="font-semibold text-[#339179] hover:underline text-lg">
+                        {user.name}
                       </p>
-                      {user.date && (
-                        <p className="text-sm text-[#339179]">
-                          {new Date(user.date).toLocaleString()}
-                        </p>
-                      )}
-                      {user.address && (
-                        <p className="text-xs text-gray-500">{user.address}</p>
-                      )}
-                      {user.shopMobileNumber && (
-                        <a href={`tel:${user.shopMobileNumber}`} className="text-xs text-blue-700">
-                          {user.shopMobileNumber}
-                        </a>
-                      )}
-                    </div>
+                    </Link>
+                    <p className="text-sm text-gray-600">{user.email}</p>
+                    <span className="text-xs bg-[#339179] text-white px-3 py-1 rounded-full capitalize inline-block">
+                      {user.role}
+                    </span>
+                    {user.date && (
+                      <p className="text-xs text-gray-400">{new Date(user.date).toLocaleString()}</p>
+                    )}
+                    {user.address && <p className="text-xs text-gray-500">{user.address}</p>}
+                    {user.shopMobileNumber && (
+                      <a
+                        href={`tel:${user.shopMobileNumber}`}
+                        className="text-xs text-blue-600 underline"
+                      >
+                        {user.shopMobileNumber}
+                      </a>
+                    )}
                   </div>
-                  <div className="mt-4 flex justify-between items-center">
-                    <button
-                      className="btn btn-sm btn-outline text-red-500 hover:bg-red-100"
-                      onClick={() => handleDelete(user._id)}
-                    >
-                      <AiOutlineUserDelete />
-                    </button>
-                    <button
-                      className="btn btn-sm btn-outline"
-                      onClick={() => {
-                        setSelectedUserId(user._id);
-                        setSelectedUserRole(user.role);
-                        document.getElementById("role_modal").showModal();
-                      }}
-                    >
-                      {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Set Role"}
-                    </button>
-                  </div>
-                </motion.div>
-              </Link>
+                </div>
+                <div className="mt-4 flex justify-between items-center">
+                  <button
+                    className="btn btn-sm bg-red-100 text-red-500 hover:bg-red-200"
+                    onClick={() => handleDelete(user._id)}
+                  >
+                    <AiOutlineUserDelete size={18} />
+                  </button>
+                  <button
+                    className="btn btn-sm bg-gray-100 text-[#339179] hover:bg-[#e6f7f3]"
+                    onClick={() => openRoleModal(user)}
+                  >
+                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                  </button>
+                </div>
+              </motion.div>
             ))}
           </div>
 
-          {/* Pagination Controls */}
-          <div className="flex justify-center mt-6">
-            <div className="join">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <input
-                  key={index}
-                  className="join-item  bg-[#339179] "
-                  type="radio"
-                  name="page"
-                  aria-label={(index + 1).toString()}
-                  checked={currentPage === index + 1}
-                  onChange={() => setCurrentPage(index + 1)}
-                />
-              ))}
+          {/* Pagination */}
+          <div className="flex flex-col items-center mt-6 gap-2">
+            <div className="join grid grid-cols-2">
+              <button
+                className="join-item btn btn-outline"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <button
+                className="join-item btn btn-outline"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+            <div className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
             </div>
           </div>
         </>
@@ -252,26 +268,36 @@ const Users = () => {
 
       {/* Role Modal */}
       <dialog id="role_modal" className="modal">
-        <div className="modal-box">
+        <div className="modal-box rounded-xl shadow-lg">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           </form>
-          <h3 className="font-bold text-lg mb-4">Select Role</h3>
-          <div className="flex flex-col gap-2">
-            {["user", "admin", "moderator", "seller"].map((roleOption) => (
-              <button
-                key={roleOption}
-                className={`btn ${selectedUserRole === roleOption ? "btn-success text-white" : "btn-outline"
+          <h3 className="font-bold text-lg mb-4 text-[#339179]">Change User Role</h3>
+          <div className="grid gap-3">
+            {["user", "admin", "moderator", "seller"].map((roleOption) => {
+              const isAllowed =
+                currentRole === "admin" ||
+                (currentRole === "moderator" && (roleOption === "user" || roleOption === "seller"));
+
+              return (
+                <button
+                  key={roleOption}
+                  disabled={!isAllowed || selectedUserRole === roleOption}
+                  onClick={() => {
+                    updateRole(selectedUserId, roleOption);
+                    document.getElementById("role_modal").close();
+                  }}
+                  className={`btn capitalize ${
+                    selectedUserRole === roleOption
+                      ? "bg-[#339179] text-white"
+                      : "btn-outline"
                   }`}
-                disabled={selectedUserRole === roleOption}
-                onClick={() => {
-                  updateRole(selectedUserId, roleOption);
-                  document.getElementById("role_modal").close();
-                }}
-              >
-                Make {roleOption.charAt(0).toUpperCase() + roleOption.slice(1)}
-              </button>
-            ))}
+                >
+                  {selectedUserRole === roleOption ? "✓ " : ""} Make{" "}
+                  {roleOption.charAt(0).toUpperCase() + roleOption.slice(1)}
+                </button>
+              );
+            })}
           </div>
         </div>
       </dialog>
