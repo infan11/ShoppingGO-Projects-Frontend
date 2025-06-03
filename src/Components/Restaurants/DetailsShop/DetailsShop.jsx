@@ -59,7 +59,7 @@ const DetailsShop = () => {
           setFoodItems(res.data?.products || []);
         })
         .finally(() => setLoading(false));
-    }, 3000); // 4 seconds delay
+    }, 2000); // 4 seconds delay
 
     return () => clearTimeout(timer);
   }, [shopName, refetch, refetchTwo]);
@@ -73,7 +73,7 @@ const DetailsShop = () => {
 
   useEffect(() => {
     if (user && user.email && cart.productName) {
-      axiosSecure.get(`/addItem?email=${user?.email}`)
+      axiosSecure.get(`/shoppingCart?email=${user?.email}`)
         .then(res => {
           const itemInCart = res.data.some(cartEntry => cartEntry.productName === cart.productName);
           setExistingItem(itemInCart);

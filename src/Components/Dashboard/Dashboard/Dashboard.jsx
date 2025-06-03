@@ -94,7 +94,7 @@ const Dashboard = () => {
       {/* Sidebar */}
       {!noNavbarFooter && (
         <aside
-          className={`fixed top-0 left-0 z-40 h-full overflow-y-auto bg-[#339179] text-white shadow-2xl transition-all duration-300 flex flex-col ${
+          className={`fixed top-0 left-0 z-40 h-full rounded-xl ml-4 overflow-y-auto bg-[#339179] text-white shadow-2xl transition-all duration-300 flex flex-col ${
             collapsed ? "w-20" : "w-64"
           } ${mobileMenuOpen ? "block" : "hidden"} md:block`}
         >
@@ -156,7 +156,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <main
         className={`flex-1 px-4 py-6 transition-all duration-300 ${
-          !noNavbarFooter ? "md:ml-20" : ""
+          !noNavbarFooter ? "md:ml-32" : ""
         }`}
       >
         <div className="max-w-7xl mx-auto">

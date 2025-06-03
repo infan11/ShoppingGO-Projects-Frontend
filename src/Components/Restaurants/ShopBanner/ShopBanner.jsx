@@ -37,13 +37,13 @@ const ShopBanner = () => {
   }
 
   return (
-    <div className="relative w-full h-[400px]">
+    <div className="relative lg:w-[1400px] mx-auto h-[400px]">
     <Swiper
         pagination={{
             dynamicBullets: true,
         }}
         modules={[Pagination]}
-        className="mySwiper w-full h-full"
+        className="mySwiper rounded-xl w-full h-full"
     >
         <SwiperSlide>
             <img

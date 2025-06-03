@@ -149,9 +149,9 @@ const Register = () => {
                                     }
                                 />
 
-                                <Typography color="gray" className="mt-4 text-center font-normal">
+                                {/* <Typography color="gray" className="mt-4 text-center font-normal">
                                     Food Seller? <a href="/restaurantRegister" className="font-medium text-gray-900">Sign up</a>
-                                </Typography>
+                                </Typography> */}
 
                                 <button type="submit" className="w-full uppercase bg-[#339179] text-white mt-2 btn rounded-badge">
                                     Sign In

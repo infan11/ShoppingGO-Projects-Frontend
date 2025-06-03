@@ -49,6 +49,10 @@ const AuthProvider = ({ children }) => {
         dispatch(setLoading(true))
         return sendPasswordResetEmail(auth, email);
     };
+    // const reloadUser = async () => {
+    //     await auth.currentUser.reload();
+    //     setUser(auth.currentUser);
+    //   };
 
     const updateUserProfile = async ({ displayName, photoURL }) => {
         if (auth.currentUser) {
@@ -120,6 +124,7 @@ const AuthProvider = ({ children }) => {
         googleAuth,
         updateUserProfile,
         resetPassword,
+        // reloadUser
     };
 
     return <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>;

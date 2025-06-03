@@ -23,6 +23,9 @@ const RestaurantRegister = () => {
     const onSubmit = async (data) => {
         try {
           // ✅ Pass both name and email
+          if(!data.displayName || data.email){
+                toast.error("Shop name and email are required")
+          }
           const response = await axiosSecure.get(`/users/check-name?name=${encodeURIComponent(data.displayName)}&email=${encodeURIComponent(data.email)}`);
           
           if (response.data?.exists) {
@@ -41,7 +44,7 @@ const RestaurantRegister = () => {
             name: data.displayName,
             email: data.email,
             shopAddress: data.shopAddress,
-            shopMobileNumber: parseFloat(data.phoneNumber),
+            phoneNumber: parseFloat(data.phoneNumber),
             date: new Date()
           };
       
@@ -68,12 +71,12 @@ const RestaurantRegister = () => {
                 <div className="bg-white p-6 md:p-10">
                     <Card color="transparent" shadow={false}>
                         <Typography variant="h4" color="blue-gray" className="text-center mb-6 font-bold">
-                            Restaurant Registration
+                            Shop Registration
                         </Typography>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                             <div>
                                 <Input
-                                    label="Restaurant Name"
+                                    label="Shop Name"
                                     size="lg"
                                     {...register("displayName", { required: true })}
                                 />

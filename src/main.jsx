@@ -15,35 +15,71 @@ import InternetStatus from './InternetStatus/InternetStatus';
 
 const queryClient = new QueryClient();
 
-const Loader = () => (
-  <div className="flex justify-center items-center min-h-screen">
-    <div>
-      <Circles
-        height="90"
-        width="90"
-        color="#339179"
-        ariaLabel="circles-loading"
-        visible={true}
-      />
-    </div>
-  </div>
-);
+const Loader = ({ useImage = true, size = 24 }) => {
+  const loaderStyle = {
+    width: `${size * 4}px`,
+    height: `${size * 4}px`,
+  };
 
-const         AppWithLoader = () => {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <div>
+        {useImage ? (
+          <img 
+            src="https://i.ibb.co/TBZhxNxQ/Icon.png" 
+            alt="Loading..." 
+            className="animate-pulse"
+            style={loaderStyle}
+            onError={(e) => {
+              e.target.onerror = null; 
+              e.target.src = ''; 
+            }}
+          />
+        ) : (
+          <Circles
+            height={size * 4}
+            width={size * 4}
+            color="#339179"
+            ariaLabel="circles-loading"
+            visible={true}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const AppWithLoader = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.loading.isLoading);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch(setLoading(false));
     }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [dispatch]);
 
   return (
     <>
-      <InternetStatus />  {/* Add InternetStatus alert here */}
-      {isLoading ? <Loader /> : <RouterProvider router={router} />}
+      {!isOnline && (
+        <div className="fixed top-0 left-0 right-0 bg-red-500 text-white text-center p-2 z-50">
+          You are currently offline. Some features may not be available.
+        </div>
+      )}
+      {isLoading ? <Loader useImage={true} size={24} /> : <RouterProvider router={router} />}
     </>
   );
 };
@@ -53,10 +89,19 @@ createRoot(document.getElementById('root')).render(
     <LanguageProvider>
       <Provider store={store}>
         <AuthProvider>
-          <Toaster />
+          <Toaster 
+            position="top-center"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+            }}
+          />
           <QueryClientProvider client={queryClient}>
-            <div className="font-Kanit bg-white text-black">
-            <AppWithLoader />
+            <div className="font-Kanit bg-white text-black min-h-screen">
+              <AppWithLoader />
             </div>
           </QueryClientProvider>
         </AuthProvider>

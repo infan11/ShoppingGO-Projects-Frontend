@@ -36,7 +36,7 @@ const Banner = () => {
   };
 
   return (
-    <div className="relative w-full lg:h-[350px]">
+    <div className="relative lg:w-[1400px] mx-auto lg:h-[350px] ">
       {isLoading && <BannerSkeleton />} {/* Shimmer Skeleton Loading with water effect */}
 
       <Swiper
@@ -52,7 +52,7 @@ const Banner = () => {
               src={src}
               alt={`Banner ${idx + 1}`}
               onLoad={handleImageLoad}
-              className="w-full lg:h-[350px]  object-cover"
+              className="w-full lg:h-[350px] rounded-xl object-cover"
             />
           </SwiperSlide>
         ))}

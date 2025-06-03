@@ -147,16 +147,17 @@ const Users = () => {
           <CountUp from={0} to={users.length} separator="," duration={2} className="text-4xl" />
         </h2>
         <div className="w-full md:w-60 relative">
-          <MagnifyingGlassIcon className="absolute h-4 w-4 text-[#339179] top-3 left-4" />
+         
           <Input
             type="text"
-            className="pl-10 text-[#339179] font-semibold"
-            placeholder="Search users..."
+            className="pl-5 text-[#339179] font-semibold"
+            placeholder=""
             label="Search Users"
             color="green"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
+           <MagnifyingGlassIcon className="absolute h-4 w-4 text-[#339179] top-3  right-4" />
         </div>
       </div>
 
@@ -165,11 +166,10 @@ const Users = () => {
         {["all", "admin", "moderator", "seller"].map((tab) => (
           <button
             key={tab}
-            className={`px-4 py-1 rounded-full text-sm font-medium transition ${
-              activeTab === tab
+            className={`px-4 py-1 rounded-full text-sm font-medium transition ${activeTab === tab
                 ? "bg-[#339179] text-white shadow-sm"
                 : "bg-gray-100 text-[#339179] hover:bg-[#e6f7f3]"
-            }`}
+              }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -206,9 +206,9 @@ const Users = () => {
                       </p>
                     </Link>
                     <p className="text-sm text-gray-600">{user.email}</p>
-                    <span className="text-xs bg-[#339179] text-white px-3 py-1 rounded-full capitalize inline-block">
+                    {/* <span className="text-xs bg-[#339179] text-white px-3 py-1 rounded-xl capitalize inline-block">
                       {user.role}
-                    </span>
+                    </span> */}
                     {user.date && (
                       <p className="text-xs text-gray-400">{new Date(user.date).toLocaleString()}</p>
                     )}
@@ -234,7 +234,8 @@ const Users = () => {
                     className="btn btn-sm bg-gray-100 text-[#339179] hover:bg-[#e6f7f3]"
                     onClick={() => openRoleModal(user)}
                   >
-                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Unknown"}
+
                   </button>
                 </div>
               </motion.div>
@@ -245,14 +246,14 @@ const Users = () => {
           <div className="flex flex-col items-center mt-6 gap-2">
             <div className="join grid grid-cols-2">
               <button
-                className="join-item btn btn-outline"
+                className="join-item btn btn-outline bg-[#339179] hover:bg-[#339179] text-white"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
                 Previous
               </button>
               <button
-                className="join-item btn btn-outline"
+                className="join-item btn btn-outline bg-[#339179] hover:bg-[#339179] text-white"
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
@@ -270,7 +271,7 @@ const Users = () => {
       <dialog id="role_modal" className="modal">
         <div className="modal-box rounded-xl shadow-lg">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button className="btn btn-sm btn-circle btn-ghost  absolute right-2 top-2">✕</button>
           </form>
           <h3 className="font-bold text-lg mb-4 text-[#339179]">Change User Role</h3>
           <div className="grid gap-3">
@@ -287,11 +288,10 @@ const Users = () => {
                     updateRole(selectedUserId, roleOption);
                     document.getElementById("role_modal").close();
                   }}
-                  className={`btn capitalize ${
-                    selectedUserRole === roleOption
+                  className={`btn capitalize ${selectedUserRole === roleOption
                       ? "bg-[#339179] text-white"
                       : "btn-outline"
-                  }`}
+                    }`}
                 >
                   {selectedUserRole === roleOption ? "✓ " : ""} Make{" "}
                   {roleOption.charAt(0).toUpperCase() + roleOption.slice(1)}
