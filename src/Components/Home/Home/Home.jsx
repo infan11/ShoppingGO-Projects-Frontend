@@ -17,15 +17,12 @@ const Home = () => {
          <Banner/>
          <BannerTwo/>
          <AvailableItem/>
-      
-
+    
         <BannerFour/>
          
 
          <AvailableBrand/>
     
-        
-         
          <ServeFood/>
        
          <DistrictAvailable/>

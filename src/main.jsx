@@ -12,6 +12,7 @@ import store from './Redux/store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { setLoading } from './Redux/Features/LoadingSlice/LoadingSlice';
 import InternetStatus from './InternetStatus/InternetStatus';
+import Swal from 'sweetalert2';
 
 const queryClient = new QueryClient();
 
@@ -25,14 +26,14 @@ const Loader = ({ useImage = true, size = 24 }) => {
     <div className="flex justify-center items-center min-h-screen">
       <div>
         {useImage ? (
-          <img 
-            src="https://i.ibb.co/TBZhxNxQ/Icon.png" 
-            alt="Loading..." 
+          <img
+            src="https://i.ibb.co/TBZhxNxQ/Icon.png"
+            alt="Loading..."
             className="animate-pulse"
             style={loaderStyle}
             onError={(e) => {
-              e.target.onerror = null; 
-              e.target.src = ''; 
+              e.target.onerror = null;
+              e.target.src = '';
             }}
           />
         ) : (
@@ -71,14 +72,23 @@ const AppWithLoader = () => {
       window.removeEventListener('offline', handleOffline);
     };
   }, [dispatch]);
-
+  if (isOnline) {
+    return null;
+  }
+  else {
+    Swal.fire({
+      title: "Something Wronng?",
+      text: "Please connect internet!",
+      icon: "error"
+    });
+  }
   return (
     <>
-      {!isOnline && (
+      {/* {!isOnline && (
         <div className="fixed top-0 left-0 right-0 bg-red-500 text-white text-center p-2 z-50">
           You are currently offline. Some features may not be available.
         </div>
-      )}
+      )} */}
       {isLoading ? <Loader useImage={true} size={24} /> : <RouterProvider router={router} />}
     </>
   );
@@ -89,7 +99,7 @@ createRoot(document.getElementById('root')).render(
     <LanguageProvider>
       <Provider store={store}>
         <AuthProvider>
-          <Toaster 
+          <Toaster
             position="top-center"
             toastOptions={{
               duration: 3000,
